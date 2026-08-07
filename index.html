@@ -144,6 +144,71 @@
             opacity:.85;
         }
 
+        /* ===== Error toast notification ===== */
+        .toast{
+            position:fixed;
+            top:25px;
+            right:25px;
+            background:#fff;
+            border-left:4px solid #E53935;
+            border-radius:8px;
+            box-shadow:0 8px 24px rgba(0,0,0,.25);
+            padding:14px 18px;
+            display:flex;
+            align-items:flex-start;
+            gap:12px;
+            min-width:280px;
+            max-width:360px;
+            transform:translateX(120%);
+            opacity:0;
+            transition:transform .35s ease, opacity .35s ease;
+            z-index:1000;
+            color:#333;
+        }
+
+        .toast.show{
+            transform:translateX(0);
+            opacity:1;
+        }
+
+        .toast-icon{
+            width:24px;
+            height:24px;
+            flex-shrink:0;
+            border-radius:50%;
+            background:#E53935;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:14px;
+            font-weight:700;
+        }
+
+        .toast-text p{
+            margin:0;
+            font-size:13.5px;
+            line-height:1.5;
+        }
+
+        .toast-title{
+            font-weight:600;
+            color:#1a1a2e;
+        }
+
+        .toast-desc{
+            color:#777;
+        }
+
+        @media(max-width:480px){
+        .toast{
+            top:15px;
+            right:15px;
+            left:15px;
+            max-width:none;
+        }
+        }
+
     </style>
 
 </head>
@@ -207,6 +272,15 @@
 
 </div>
 
+<!-- Error toast notification -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="toast-icon">&#33;</div>
+    <div class="toast-text">
+        <p class="toast-title">Login Failed</p>
+        <p class="toast-desc">Incorrect username / password.</p>
+    </div>
+</div>
+
 <script>
 
     document.getElementById("loginForm").addEventListener("submit", function(event) {
@@ -224,19 +298,27 @@
 
         } else {
 
-            const result = confirm("Incorrect Username / Password.");
+            // Clear the fields immediately
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
 
-            if (result) {
-                // OK clicked
-                document.getElementById("password").value = "";
-                document.getElementById("password").focus();
-            } else {
-                // Cancel clicked
-                document.getElementById("username").focus();
-            }
+            showToast();
+
+            document.getElementById("username").focus();
         }
 
     });
+
+    const toast = document.getElementById("toast");
+    let toastTimer;
+
+    function showToast(){
+        clearTimeout(toastTimer);
+        toast.classList.add("show");
+        toastTimer = setTimeout(function(){
+            toast.classList.remove("show");
+        }, 3000);
+    }
 
 </script>
 
