@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Send Money</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#eef3f8}
+
+/* ===== Layout (matches dashboard.html) ===== */
+.container{display:flex;min-height:100vh}
+
+/* LEFT MENU - copied from dashboard.html */
+.sidebar{
+    width:270px;
+    background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
+    color:white;
+    overflow:auto;
+}
+
+.profile{
+    text-align:center;
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.profile img{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:4px solid white;
+}
+
+.profile h2{
+    margin-top:15px;
+}
+
+.profile p{
+    color:#d7d7d7;
+    font-size:14px;
+}
+
+.menu{
+    padding:20px;
+}
+
+.menu h3{
+    color:#FFD54F;
+    margin-bottom:12px;
+}
+
+.menu a{
+    display:block;
+    padding:14px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:white;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#00BCD4;
+    transform:translateX(8px);
+}
+
+/* RIGHT PANEL */
+.main{
+    flex:1;
+    overflow:auto;
+}
+
+.header{
+    background:white;
+    padding:20px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+/* PROFILE DROPDOWN - copied from dashboard.html */
+.profile-menu{
+    position:relative;
+}
+
+.profile-trigger{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-radius:30px;
+    background:#f2f5f9;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.profile-trigger:hover{
+    background:#e3ecf5;
+}
+
+.profile-trigger img{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #1976D2;
+}
+
+.profile-trigger span{
+    font-weight:600;
+    color:#16213e;
+    font-size:15px;
+}
+
+.profile-trigger .arrow{
+    font-size:12px;
+    color:#666;
+    transition:.3s;
+}
+
+.profile-menu:hover .arrow{
+    transform:rotate(180deg);
+}
+
+.dropdown-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    min-width:190px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    overflow:hidden;
+    z-index:100;
+}
+
+.profile-menu::after{
+    content:"";
+    position:absolute;
+    top:100%;
+    right:0;
+    height:10px;
+    width:100%;
+}
+
+.profile-menu:hover .dropdown-menu{
+    display:block;
+}
+
+.dropdown-menu a{
+    display:block;
+    padding:14px 18px;
+    text-decoration:none;
+    color:#333;
+    font-size:14px;
+    transition:.2s;
+}
+
+.dropdown-menu a:hover{
+    background:#f2f5f9;
+}
+
+.dropdown-menu a#logoutButton{
+    color:#E53935;
+    font-weight:600;
+    border-top:1px solid #eee;
+}
+
+/* ===== Send Money page specific styles ===== */
+.card{margin:30px;background:#fff;border-radius:15px;padding:25px;box-shadow:0 6px 15px rgba(0,0,0,.1);max-width:640px}
+h1{font-size:32px;color:#1a1a2e}
+.subtitle{color:#777;margin-bottom:25px}
+
+/* step indicator */
+.steps{display:flex;align-items:center;margin-bottom:30px}
+.step{display:flex;align-items:center;gap:10px}
+.step-circle{width:32px;height:32px;border-radius:50%;background:#dfe6ee;color:#8a97a8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;transition:.3s}
+.step-label{font-size:14px;color:#8a97a8;font-weight:500}
+.step.active .step-circle{background:#1976D2;color:#fff}
+.step.active .step-label{color:#16213e}
+.step.done .step-circle{background:#2ecc71;color:#fff}
+.step-line{flex:1;height:2px;background:#dfe6ee;margin:0 12px}
+
+.panel{display:none}
+.panel.active{display:block}
+
+.section{font-size:20px;margin:0 0 18px;color:#0f3460}
+.row{margin:16px 0}
+label{display:block;font-size:14px;font-weight:600;color:#555;margin-bottom:8px}
+
+.currency-row{display:flex;gap:15px;align-items:flex-end}
+.currency-row .field{flex:1}
+
+select,input[type=text],input[type=number]{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccd5e0;
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    background:#fff;
+}
+
+.swap-btn{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:1px solid #ccd5e0;
+    background:#f8fafc;
+    cursor:pointer;
+    font-size:18px;
+    color:#1976D2;
+    flex-shrink:0;
+    transition:.2s;
+}
+
+.swap-btn:hover{
+    background:#e3ecf5;
+    transform:rotate(180deg);
+}
+
+.rate-box{
+    margin-top:10px;
+    background:#f8fafc;
+    border:1px solid #e3e8ef;
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:14px;
+    color:#555;
+}
+
+.rate-box strong{
+    color:#1565C0;
+}
+
+.converted-box{
+    margin-top:20px;
+    background:linear-gradient(135deg,#1976D2,#0f3460);
+    color:#fff;
+    border-radius:12px;
+    padding:20px;
+}
+
+.converted-box .label{
+    font-size:13px;
+    opacity:.8;
+    margin-bottom:6px;
+}
+
+.converted-box .amount{
+    font-size:30px;
+    font-weight:700;
+}
+
+.error-text{
+    color:#E53935;
+    font-size:13px;
+    margin-top:6px;
+    display:none;
+}
+
+.footer-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+    margin-top:30px;
+}
+
+button.btn{
+    padding:12px 26px;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s,opacity .2s,transform .1s;
+}
+
+button.btn-primary{
+    background:linear-gradient(90deg,#1976D2,#0f3460);
+    color:#fff;
+}
+
+button.btn-primary:disabled{
+    background:#9fb3c8;
+    cursor:not-allowed;
+    opacity:.7;
+}
+
+button.btn-primary:not(:disabled):hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(25,118,210,.35);
+}
+
+button.btn-secondary{
+    background:#eef3f8;
+    color:#333;
+}
+
+button.btn-secondary:hover{
+    background:#dfe6ee;
+}
+
+/* Review summary */
+.summary{
+    background:#f8fafc;
+    border:1px solid #e3e8ef;
+    border-radius:12px;
+    padding:20px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #e6ebf1;
+    font-size:14.5px;
+}
+
+.summary-row:last-child{
+    border-bottom:none;
+}
+
+.summary-row .k{
+    color:#777;
+}
+
+.summary-row .v{
+    font-weight:600;
+    color:#16213e;
+}
+
+.summary-row.total .v{
+    color:#1565C0;
+    font-size:18px;
+}
+
+/* Success panel */
+.success-wrap{
+    text-align:center;
+    padding:20px 0 10px;
+}
+
+.success-icon{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:#e8f8ef;
+    color:#2ecc71;
+    font-size:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 20px;
+}
+
+.success-wrap h2{
+    color:#16213e;
+    margin-bottom:8px;
+}
+
+.success-wrap p{
+    color:#777;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.ref-box{
+    display:inline-block;
+    background:#f8fafc;
+    border:1px dashed #ccd5e0;
+    border-radius:8px;
+    padding:10px 20px;
+    font-family:monospace;
+    font-size:15px;
+    color:#1565C0;
+    margin-bottom:25px;
+}
+
+@media(max-width:900px){
+.container{flex-direction:column}
+.sidebar{width:100%}
+.card{margin:20px;max-width:none}
+.currency-row{flex-direction:column;align-items:stretch}
+.swap-btn{align-self:center}
+}
+
+/* ===== Toast notification ===== */
+.toast{
+    position:fixed;
+    top:25px;
+    right:25px;
+    background:#fff;
+    border-left:4px solid #2ecc71;
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+    padding:14px 18px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    min-width:280px;
+    max-width:360px;
+    transform:translateX(120%);
+    opacity:0;
+    transition:transform .35s ease, opacity .35s ease;
+    z-index:1000;
+}
+
+.toast.show{
+    transform:translateX(0);
+    opacity:1;
+}
+
+.toast-icon{
+    width:24px;
+    height:24px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:#2ecc71;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+.toast-text p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.5;
+}
+
+.toast-title{
+    font-weight:600;
+    color:#1a1a2e;
+}
+
+.toast-desc{
+    color:#777;
+}
+
+@media(max-width:480px){
+.toast{
+    top:15px;
+    right:15px;
+    left:15px;
+    max-width:none;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <!-- LEFT FRAME (matches dashboard.html) -->
+    <div class="sidebar">
+
+        <div class="profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h2 id="loggedInUser">Administrator</h2>
+            <p>Automation Tester</p>
+        </div>
+
+        <div class="menu">
+            <h3>Navigation</h3>
+            <a href="dashboard.html" id="navDashboard">Dashboard</a>
+            <a href="createuser.html" id="navUsers">Create User</a>
+            <a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
+            <a href="datatable.html" id="navDataTable">Data Table</a>
+            <a href="sendmoney.html" id="navSendMoney" class="active">Send Money</a>
+        </div>
+
+    </div>
+
+    <!-- RIGHT FRAME -->
+    <div class="main">
+
+        <div class="header">
+
+            <h2 id="dashboardTitle">
+                Selenium & Playwright Practice Dashboard
+            </h2>
+
+            <div class="profile-menu">
+
+                <div class="profile-trigger">
+
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                    <span id="loggedInUserHeader">Administrator</span>
+
+                    <span class="arrow">&#9662;</span>
+
+                </div>
+
+                <div class="dropdown-menu">
+
+                    <a href="#" id="navAbout">About</a>
+
+                    <a href="#" id="navSupport">Support</a>
+
+                    <a href="#" id="navChangePassword">Change Password</a>
+
+                    <a href="#" id="logoutButton">Logout</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h1>Send Money</h1>
+            <div class="subtitle">Transfer funds between currencies in a few simple steps</div>
+
+            <!-- Step indicator -->
+            <div class="steps" id="stepIndicator">
+                <div class="step active" id="stepInd1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Payment Details</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" id="stepInd2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Review</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" id="stepInd3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Confirmation</div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Payment details -->
+            <div class="panel active" id="panelDetails">
+
+                <div class="section">Enter Payment Details</div>
+
+                <div class="row">
+                    <div class="currency-row">
+                        <div class="field">
+                            <label for="fromCurrency">From Currency</label>
+                            <select id="fromCurrency">
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="INR" selected>INR - Indian Rupee</option>
+                                <option value="JPY">JPY - Japanese Yen</option>
+                                <option value="AUD">AUD - Australian Dollar</option>
+                                <option value="CAD">CAD - Canadian Dollar</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="swap-btn" id="swapBtn" title="Swap currencies">&#8646;</button>
+
+                        <div class="field">
+                            <label for="toCurrency">To Currency</label>
+                            <select id="toCurrency">
+                                <option value="USD" selected>USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="INR">INR - Indian Rupee</option>
+                                <option value="JPY">JPY - Japanese Yen</option>
+                                <option value="AUD">AUD - Australian Dollar</option>
+                                <option value="CAD">CAD - Canadian Dollar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="amountInput">Amount to Send</label>
+                    <input type="number" id="amountInput" placeholder="Enter amount" min="1" step="0.01">
+                    <div class="error-text" id="amountError">Please enter a valid amount greater than 0.</div>
+                </div>
+
+                <div class="row">
+                    <label for="recipientName">Recipient Name</label>
+                    <input type="text" id="recipientName" placeholder="Enter recipient's full name">
+                    <div class="error-text" id="recipientError">Please enter the recipient's name.</div>
+                </div>
+
+                <div class="rate-box" id="rateBox">
+                    Exchange rate: <strong id="rateText">1 INR = 0.0120 USD</strong>
+                </div>
+
+                <div class="converted-box">
+                    <div class="label">Recipient will receive</div>
+                    <div class="amount" id="convertedAmount">0.00 USD</div>
+                </div>
+
+                <div class="footer-actions">
+                    <button type="button" class="btn btn-primary" id="reviewBtn">Review Payment</button>
+                </div>
+
+            </div>
+
+            <!-- STEP 2: Review -->
+            <div class="panel" id="panelReview">
+
+                <div class="section">Review Your Payment</div>
+
+                <div class="summary">
+                    <div class="summary-row">
+                        <div class="k">Recipient</div>
+                        <div class="v" id="rvRecipient">-</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="k">You Send</div>
+                        <div class="v" id="rvSend">-</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="k">Exchange Rate</div>
+                        <div class="v" id="rvRate">-</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="k">Transfer Fee</div>
+                        <div class="v" id="rvFee">-</div>
+                    </div>
+                    <div class="summary-row total">
+                        <div class="k">Recipient Gets</div>
+                        <div class="v" id="rvReceive">-</div>
+                    </div>
+                </div>
+
+                <div class="footer-actions">
+                    <button type="button" class="btn btn-secondary" id="backBtn">Back</button>
+                    <button type="button" class="btn btn-primary" id="payNowBtn">Pay Now</button>
+                </div>
+
+            </div>
+
+            <!-- STEP 3: Confirmation -->
+            <div class="panel" id="panelSuccess">
+
+                <div class="success-wrap">
+                    <div class="success-icon">&#10003;</div>
+                    <h2>Payment Successful</h2>
+                    <p>Your money transfer has been completed successfully.</p>
+                    <div class="ref-box" id="refNumber">TXN-000000</div>
+                </div>
+
+                <div class="summary">
+                    <div class="summary-row">
+                        <div class="k">Recipient</div>
+                        <div class="v" id="scRecipient">-</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="k">Amount Sent</div>
+                        <div class="v" id="scSend">-</div>
+                    </div>
+                    <div class="summary-row total">
+                        <div class="k">Amount Received</div>
+                        <div class="v" id="scReceive">-</div>
+                    </div>
+                </div>
+
+                <div class="footer-actions">
+                    <button type="button" class="btn btn-primary" id="newPaymentBtn">Send Another Payment</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="toast-icon">&#10003;</div>
+    <div class="toast-text">
+        <p class="toast-title">Payment sent</p>
+        <p class="toast-desc" id="toastDesc">Your transfer was completed successfully.</p>
+    </div>
+</div>
+
+<script>
+
+document.getElementById("logoutButton").addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    if(confirm("Are you sure you want to logout?")){
+
+        window.location.href="index.html";
+
+    }
+
+});
+
+</script>
+
+<script>
+
+/* ===== Mock exchange rates (base: 1 unit of currency -> USD) ===== */
+const ratesToUSD = {
+    USD: 1,
+    EUR: 1.09,
+    GBP: 1.27,
+    INR: 0.012,
+    JPY: 0.0068,
+    AUD: 0.66,
+    CAD: 0.74
+};
+
+const currencyNames = {
+    USD: "USD - US Dollar",
+    EUR: "EUR - Euro",
+    GBP: "GBP - British Pound",
+    INR: "INR - Indian Rupee",
+    JPY: "JPY - Japanese Yen",
+    AUD: "AUD - Australian Dollar",
+    CAD: "CAD - Canadian Dollar"
+};
+
+const FEE_FLAT = 2.5; // flat fee in the "from" currency's USD-equivalent, kept simple for practice
+
+const fromCurrency = document.getElementById("fromCurrency");
+const toCurrency = document.getElementById("toCurrency");
+const amountInput = document.getElementById("amountInput");
+const recipientName = document.getElementById("recipientName");
+const amountError = document.getElementById("amountError");
+const recipientError = document.getElementById("recipientError");
+const rateText = document.getElementById("rateText");
+const convertedAmount = document.getElementById("convertedAmount");
+const swapBtn = document.getElementById("swapBtn");
+const reviewBtn = document.getElementById("reviewBtn");
+
+function getRate(from, to){
+    return ratesToUSD[from] / ratesToUSD[to];
+}
+
+function formatAmount(value, currency){
+    return Number(value).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + " " + currency;
+}
+
+function updateConversion(){
+    const from = fromCurrency.value;
+    const to = toCurrency.value;
+    const rate = getRate(from, to);
+
+    rateText.textContent = "1 " + from + " = " + rate.toFixed(4) + " " + to;
+
+    const amt = parseFloat(amountInput.value);
+
+    if(!isNaN(amt) && amt > 0){
+        const converted = amt * rate;
+        convertedAmount.textContent = formatAmount(converted, to);
+    }else{
+        convertedAmount.textContent = "0.00 " + to;
+    }
+}
+
+fromCurrency.addEventListener("change", updateConversion);
+toCurrency.addEventListener("change", updateConversion);
+amountInput.addEventListener("input", updateConversion);
+
+swapBtn.addEventListener("click", function(){
+    const temp = fromCurrency.value;
+    fromCurrency.value = toCurrency.value;
+    toCurrency.value = temp;
+    updateConversion();
+});
+
+updateConversion();
+
+/* ===== Step navigation ===== */
+const panelDetails = document.getElementById("panelDetails");
+const panelReview = document.getElementById("panelReview");
+const panelSuccess = document.getElementById("panelSuccess");
+
+const stepInd1 = document.getElementById("stepInd1");
+const stepInd2 = document.getElementById("stepInd2");
+const stepInd3 = document.getElementById("stepInd3");
+
+function goToStep(step){
+    [panelDetails, panelReview, panelSuccess].forEach(p => p.classList.remove("active"));
+    [stepInd1, stepInd2, stepInd3].forEach(s => { s.classList.remove("active"); });
+
+    if(step === 1){
+        panelDetails.classList.add("active");
+        stepInd1.classList.add("active");
+        stepInd2.classList.remove("done");
+    }else if(step === 2){
+        panelReview.classList.add("active");
+        stepInd1.classList.add("done");
+        stepInd2.classList.add("active");
+    }else{
+        panelSuccess.classList.add("active");
+        stepInd1.classList.add("done");
+        stepInd2.classList.add("done");
+        stepInd3.classList.add("active");
+    }
+}
+
+reviewBtn.addEventListener("click", function(){
+
+    let valid = true;
+
+    const amt = parseFloat(amountInput.value);
+    if(isNaN(amt) || amt <= 0){
+        amountError.style.display = "block";
+        valid = false;
+    }else{
+        amountError.style.display = "none";
+    }
+
+    if(recipientName.value.trim() === ""){
+        recipientError.style.display = "block";
+        valid = false;
+    }else{
+        recipientError.style.display = "none";
+    }
+
+    if(!valid) return;
+
+    const from = fromCurrency.value;
+    const to = toCurrency.value;
+    const rate = getRate(from, to);
+    const converted = amt * rate;
+    const feeInFrom = FEE_FLAT / ratesToUSD[from];
+    const receiveAfterFee = (amt - feeInFrom) * rate;
+
+    document.getElementById("rvRecipient").textContent = recipientName.value.trim();
+    document.getElementById("rvSend").textContent = formatAmount(amt, from);
+    document.getElementById("rvRate").textContent = "1 " + from + " = " + rate.toFixed(4) + " " + to;
+    document.getElementById("rvFee").textContent = formatAmount(feeInFrom, from);
+    document.getElementById("rvReceive").textContent = formatAmount(receiveAfterFee, to);
+
+    goToStep(2);
+});
+
+document.getElementById("backBtn").addEventListener("click", function(){
+    goToStep(1);
+});
+
+document.getElementById("payNowBtn").addEventListener("click", function(){
+
+    const recipient = document.getElementById("rvRecipient").textContent;
+    const sendAmt = document.getElementById("rvSend").textContent;
+    const receiveAmt = document.getElementById("rvReceive").textContent;
+
+    document.getElementById("scRecipient").textContent = recipient;
+    document.getElementById("scSend").textContent = sendAmt;
+    document.getElementById("scReceive").textContent = receiveAmt;
+
+    const ref = "TXN-" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById("refNumber").textContent = ref;
+
+    document.getElementById("toastDesc").textContent = "Reference " + ref + " - funds are on their way.";
+
+    goToStep(3);
+    showToast();
+});
+
+document.getElementById("newPaymentBtn").addEventListener("click", function(){
+    amountInput.value = "";
+    recipientName.value = "";
+    updateConversion();
+    goToStep(1);
+});
+
+/* ===== Toast ===== */
+const toast = document.getElementById("toast");
+let toastTimer;
+
+function showToast(){
+    clearTimeout(toastTimer);
+    toast.classList.add("show");
+    toastTimer = setTimeout(function(){
+        toast.classList.remove("show");
+    }, 4000);
+}
+
+</script>
+
+</body>
+</html>
