@@ -1,202 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Table & Uploads</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-body{background:#eef3f8}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table & Uploads</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+        body{background:#eef3f8}
 
-/* ===== Layout (matches dashboard.html / createuser.html) ===== */
-.container{display:flex;min-height:100vh}
+        /* ===== Layout (matches dashboard.html / createuser.html) ===== */
+        .container{display:flex;min-height:100vh}
 
-.sidebar{
-    width:270px;
-    background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
-    color:white;
-    overflow:auto;
-}
+        .sidebar{
+            width:270px;
+            background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
+            color:white;
+            overflow:auto;
+        }
 
-.profile{
-    text-align:center;
-    padding:25px;
-    border-bottom:1px solid rgba(255,255,255,.15);
-}
+        .profile{
+            text-align:center;
+            padding:25px;
+            border-bottom:1px solid rgba(255,255,255,.15);
+        }
 
-.profile img{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    border:4px solid white;
-}
+        .profile img{
+            width:100px;
+            height:100px;
+            border-radius:50%;
+            border:4px solid white;
+        }
 
-.profile h2{
-    margin-top:15px;
-}
+        .profile h2{
+            margin-top:15px;
+        }
 
-.profile p{
-    color:#d7d7d7;
-    font-size:14px;
-}
+        .profile p{
+            color:#d7d7d7;
+            font-size:14px;
+        }
 
-.menu{
-    padding:20px;
-}
+        .menu{
+            padding:20px;
+        }
 
-.menu h3{
-    color:#FFD54F;
-    margin-bottom:12px;
-}
+        .menu h3{
+            color:#FFD54F;
+            margin-bottom:12px;
+        }
 
-.menu a{
-    display:block;
-    padding:14px;
-    margin-bottom:10px;
-    text-decoration:none;
-    color:white;
-    border-radius:10px;
-    transition:.3s;
-}
+        .menu a{
+            display:block;
+            padding:14px;
+            margin-bottom:10px;
+            text-decoration:none;
+            color:white;
+            border-radius:10px;
+            transition:.3s;
+        }
 
-.menu a:hover,
-.menu a.active{
-    background:#00BCD4;
-    transform:translateX(8px);
-}
+        .menu a:hover,
+        .menu a.active{
+            background:#00BCD4;
+            transform:translateX(8px);
+        }
 
-.main{
-    flex:1;
-    overflow:auto;
-}
+        .main{
+            flex:1;
+            overflow:auto;
+        }
 
-.header{
-    background:white;
-    padding:20px 35px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.1);
-}
+        .header{
+            background:white;
+            padding:20px 35px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 3px 10px rgba(0,0,0,.1);
+        }
 
-.header button{
-    padding:10px 25px;
-    background:#E53935;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
+        /* PROFILE DROPDOWN - copied from dashboard.html */
+        .profile-menu{
+            position:relative;
+        }
 
-/* ===== Shared card / section styles ===== */
-.card{margin:30px;background:#fff;border-radius:15px;padding:25px;box-shadow:0 6px 15px rgba(0,0,0,.1)}
-h1{font-size:34px;color:#1a1a2e}
-.subtitle{color:#777;margin-bottom:25px}
-.section{font-size:22px;margin:25px 0 15px;border-bottom:1px solid #eee;padding-bottom:8px;color:#0f3460}
+        .profile-trigger{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:8px 16px;
+            border-radius:30px;
+            background:#f2f5f9;
+            cursor:pointer;
+            transition:.3s;
+        }
 
-button.cont{background:#25a9e0;color:#fff;border:none;padding:10px 22px;border-radius:5px;cursor:pointer;transition:background .2s,opacity .2s;font-size:14px}
-button.cont:disabled{background:#9fb3c8;cursor:not-allowed;opacity:.7}
-button.cont:not(:disabled):hover{background:#1c8cba}
+        .profile-trigger:hover{
+            background:#e3ecf5;
+        }
 
-/* ===== Data table specific ===== */
-.table-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px;flex-wrap:wrap}
-.search-box{position:relative;flex:1;max-width:320px}
-.search-box input{width:100%;padding:10px 12px 10px 36px;border:1px solid #ccc;border-radius:6px;font-size:14px}
-.search-box span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#999;font-size:14px}
-.bulk-actions{display:flex;align-items:center;gap:10px;font-size:14px;color:#555}
-.bulk-actions button{background:#E53935;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px}
-.bulk-actions button:disabled{background:#e8b3b1;cursor:not-allowed}
+        .profile-trigger img{
+            width:36px;
+            height:36px;
+            border-radius:50%;
+            object-fit:cover;
+            border:2px solid #1976D2;
+        }
 
-table.data-table{width:100%;border-collapse:collapse;font-size:14px}
-table.data-table th,table.data-table td{padding:12px 14px;border-bottom:1px solid #eee;text-align:left}
-table.data-table th{background:#f4f7fb;color:#16213e;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
-table.data-table th.sortable:hover{background:#e9eff8}
-table.data-table th .arrow{font-size:11px;color:#999;margin-left:4px}
-table.data-table tr:hover td{background:#fafcff}
-table.data-table td input[type=text],table.data-table td input[type=email]{width:100%;padding:7px 8px;border:1px solid #bcd;border-radius:4px;font-size:13px}
-.status-pill{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
-.status-active{background:#e3f8e9;color:#1a9d4c}
-.status-inactive{background:#fdeaea;color:#c0392b}
-.row-actions{display:flex;gap:8px}
-.icon-btn{border:none;background:#f0f3f8;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;transition:.2s}
-.icon-btn:hover{background:#dde6f0}
-.icon-btn.save{background:#d8f3df;color:#1a9d4c}
-.icon-btn.cancel{background:#fbe2e2;color:#c0392b}
-.icon-btn.delete:hover{background:#fbe2e2;color:#c0392b}
-.empty-row td{text-align:center;color:#999;padding:30px;font-style:italic}
+        .profile-trigger span{
+            font-weight:600;
+            color:#16213e;
+            font-size:15px;
+        }
 
-.pagination{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:18px;font-size:13px}
-.pagination button{border:1px solid #ccd5e0;background:#fff;padding:7px 12px;border-radius:6px;cursor:pointer;color:#333}
-.pagination button.active{background:#25a9e0;color:#fff;border-color:#25a9e0}
-.pagination button:disabled{cursor:not-allowed;opacity:.4}
-.pagination select{padding:6px 8px;border:1px solid #ccd5e0;border-radius:6px;margin-left:10px}
+        .profile-trigger .arrow{
+            font-size:12px;
+            color:#666;
+            transition:.3s;
+        }
 
-/* ===== Toast (matches createuser.html) ===== */
-.toast{
-    position:fixed;
-    top:25px;
-    right:25px;
-    background:#fff;
-    border-left:4px solid #2ecc71;
-    border-radius:8px;
-    box-shadow:0 8px 24px rgba(0,0,0,.15);
-    padding:14px 18px;
-    display:flex;
-    align-items:flex-start;
-    gap:12px;
-    min-width:280px;
-    max-width:360px;
-    transform:translateX(120%);
-    opacity:0;
-    transition:transform .35s ease, opacity .35s ease;
-    z-index:1000;
-}
-.toast.show{transform:translateX(0);opacity:1}
-.toast.error{border-left-color:#e74c3c}
-.toast-icon{width:24px;height:24px;flex-shrink:0;border-radius:50%;background:#2ecc71;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
-.toast.error .toast-icon{background:#e74c3c}
-.toast-text p{margin:0;font-size:13.5px;line-height:1.5}
-.toast-title{font-weight:600;color:#1a1a2e}
-.toast-desc{color:#777}
-.toast-close{background:none;border:none;color:#aaa;font-size:16px;cursor:pointer;line-height:1;margin-left:auto;padding:0}
-.toast-close:hover{color:#555}
+        .profile-menu:hover .arrow{
+            transform:rotate(180deg);
+        }
 
-/* ===== Delete confirm modal ===== */
-.modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.45);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:1100;
-}
-.modal-overlay.show{display:flex}
-.modal-box{
-    background:#fff;
-    border-radius:14px;
-    padding:28px 30px;
-    width:340px;
-    box-shadow:0 12px 30px rgba(0,0,0,.2);
-}
-.modal-box h3{color:#1a1a2e;margin-bottom:10px;font-size:19px}
-.modal-box p{color:#666;font-size:14px;margin-bottom:22px;line-height:1.6}
-.modal-actions{display:flex;justify-content:flex-end;gap:10px}
-.modal-actions button{padding:9px 18px;border:none;border-radius:6px;font-size:14px;cursor:pointer}
-.modal-actions .btn-cancel{background:#eceff1;color:#333}
-.modal-actions .btn-delete{background:#E53935;color:#fff}
+        .dropdown-menu{
+            display:none;
+            position:absolute;
+            top:calc(100% + 10px);
+            right:0;
+            min-width:190px;
+            background:white;
+            border-radius:12px;
+            box-shadow:0 10px 30px rgba(0,0,0,.15);
+            overflow:hidden;
+            z-index:100;
+        }
 
-@media(max-width:900px){
-.container{flex-direction:column}
-.sidebar{width:100%}
-.table-toolbar{flex-direction:column;align-items:stretch}
-.search-box{max-width:none}
-}
-@media(max-width:480px){
-.toast{top:15px;right:15px;left:15px;max-width:none}
-}
-</style>
+        .profile-menu::after{
+            content:"";
+            position:absolute;
+            top:100%;
+            right:0;
+            height:10px;
+            width:100%;
+        }
+
+        .profile-menu:hover .dropdown-menu{
+            display:block;
+        }
+
+        .dropdown-menu a{
+            display:block;
+            padding:14px 18px;
+            text-decoration:none;
+            color:#333;
+            font-size:14px;
+            transition:.2s;
+        }
+
+        .dropdown-menu a:hover{
+            background:#f2f5f9;
+        }
+
+        .dropdown-menu a#logoutButton{
+            color:#E53935;
+            font-weight:600;
+            border-top:1px solid #eee;
+        }
+
+        /* ===== Shared card / section styles ===== */
+        .card{margin:30px;background:#fff;border-radius:15px;padding:25px;box-shadow:0 6px 15px rgba(0,0,0,.1)}
+        h1{font-size:34px;color:#1a1a2e}
+        .subtitle{color:#777;margin-bottom:25px}
+        .section{font-size:22px;margin:25px 0 15px;border-bottom:1px solid #eee;padding-bottom:8px;color:#0f3460}
+
+        button.cont{background:#25a9e0;color:#fff;border:none;padding:10px 22px;border-radius:5px;cursor:pointer;transition:background .2s,opacity .2s;font-size:14px}
+        button.cont:disabled{background:#9fb3c8;cursor:not-allowed;opacity:.7}
+        button.cont:not(:disabled):hover{background:#1c8cba}
+
+        /* ===== Data table specific ===== */
+        .table-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px;flex-wrap:wrap}
+        .search-box{position:relative;flex:1;max-width:320px}
+        .search-box input{width:100%;padding:10px 12px 10px 36px;border:1px solid #ccc;border-radius:6px;font-size:14px}
+        .search-box span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#999;font-size:14px}
+        .bulk-actions{display:flex;align-items:center;gap:10px;font-size:14px;color:#555}
+        .bulk-actions button{background:#E53935;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px}
+        .bulk-actions button:disabled{background:#e8b3b1;cursor:not-allowed}
+
+        table.data-table{width:100%;border-collapse:collapse;font-size:14px}
+        table.data-table th,table.data-table td{padding:12px 14px;border-bottom:1px solid #eee;text-align:left}
+        table.data-table th{background:#f4f7fb;color:#16213e;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
+        table.data-table th.sortable:hover{background:#e9eff8}
+        table.data-table th .arrow{font-size:11px;color:#999;margin-left:4px}
+        table.data-table tr:hover td{background:#fafcff}
+        table.data-table td input[type=text],table.data-table td input[type=email]{width:100%;padding:7px 8px;border:1px solid #bcd;border-radius:4px;font-size:13px}
+        .status-pill{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+        .status-active{background:#e3f8e9;color:#1a9d4c}
+        .status-inactive{background:#fdeaea;color:#c0392b}
+        .row-actions{display:flex;gap:8px}
+        .icon-btn{border:none;background:#f0f3f8;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;transition:.2s}
+        .icon-btn:hover{background:#dde6f0}
+        .icon-btn.save{background:#d8f3df;color:#1a9d4c}
+        .icon-btn.cancel{background:#fbe2e2;color:#c0392b}
+        .icon-btn.delete:hover{background:#fbe2e2;color:#c0392b}
+        .empty-row td{text-align:center;color:#999;padding:30px;font-style:italic}
+
+        .pagination{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:18px;font-size:13px}
+        .pagination button{border:1px solid #ccd5e0;background:#fff;padding:7px 12px;border-radius:6px;cursor:pointer;color:#333}
+        .pagination button.active{background:#25a9e0;color:#fff;border-color:#25a9e0}
+        .pagination button:disabled{cursor:not-allowed;opacity:.4}
+        .pagination select{padding:6px 8px;border:1px solid #ccd5e0;border-radius:6px;margin-left:10px}
+
+        /* ===== Toast (matches createuser.html) ===== */
+        .toast{
+            position:fixed;
+            top:25px;
+            right:25px;
+            background:#fff;
+            border-left:4px solid #2ecc71;
+            border-radius:8px;
+            box-shadow:0 8px 24px rgba(0,0,0,.15);
+            padding:14px 18px;
+            display:flex;
+            align-items:flex-start;
+            gap:12px;
+            min-width:280px;
+            max-width:360px;
+            transform:translateX(120%);
+            opacity:0;
+            transition:transform .35s ease, opacity .35s ease;
+            z-index:1000;
+        }
+        .toast.show{transform:translateX(0);opacity:1}
+        .toast.error{border-left-color:#e74c3c}
+        .toast-icon{width:24px;height:24px;flex-shrink:0;border-radius:50%;background:#2ecc71;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+        .toast.error .toast-icon{background:#e74c3c}
+        .toast-text p{margin:0;font-size:13.5px;line-height:1.5}
+        .toast-title{font-weight:600;color:#1a1a2e}
+        .toast-desc{color:#777}
+        .toast-close{background:none;border:none;color:#aaa;font-size:16px;cursor:pointer;line-height:1;margin-left:auto;padding:0}
+        .toast-close:hover{color:#555}
+
+        /* ===== Delete confirm modal ===== */
+        .modal-overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(15,23,42,.45);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            z-index:1100;
+        }
+        .modal-overlay.show{display:flex}
+        .modal-box{
+            background:#fff;
+            border-radius:14px;
+            padding:28px 30px;
+            width:340px;
+            box-shadow:0 12px 30px rgba(0,0,0,.2);
+        }
+        .modal-box h3{color:#1a1a2e;margin-bottom:10px;font-size:19px}
+        .modal-box p{color:#666;font-size:14px;margin-bottom:22px;line-height:1.6}
+        .modal-actions{display:flex;justify-content:flex-end;gap:10px}
+        .modal-actions button{padding:9px 18px;border:none;border-radius:6px;font-size:14px;cursor:pointer}
+        .modal-actions .btn-cancel{background:#eceff1;color:#333}
+        .modal-actions .btn-delete{background:#E53935;color:#fff}
+
+        @media(max-width:900px){
+        .container{flex-direction:column}
+        .sidebar{width:100%}
+        .table-toolbar{flex-direction:column;align-items:stretch}
+        .search-box{max-width:none}
+        }
+        @media(max-width:480px){
+        .toast{top:15px;right:15px;left:15px;max-width:none}
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -213,7 +293,7 @@ table.data-table td input[type=text],table.data-table td input[type=email]{width
             <h3>Navigation</h3>
             <a href="dashboard.html" id="navDashboard">Dashboard</a>
             <a href="createuser.html" id="navUsers">Create User</a>
-			<a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
+            <a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
             <a href="datatable.html" id="navDataTable" class="active">Data Table</a>
         </div>
     </div>
@@ -223,7 +303,33 @@ table.data-table td input[type=text],table.data-table td input[type=email]{width
 
         <div class="header">
             <h2 id="dashboardTitle">Selenium & Playwright Practice Dashboard</h2>
-            <button id="logoutButton"><h2>Logout</h2></button>
+
+            <div class="profile-menu">
+
+                <div class="profile-trigger">
+
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                    <span id="loggedInUserHeader">Administrator</span>
+
+                    <span class="arrow">&#9662;</span>
+
+                </div>
+
+                <div class="dropdown-menu">
+
+                    <a href="#" id="navAbout">About</a>
+
+                    <a href="#" id="navSupport">Support</a>
+
+                    <a href="#" id="navChangePassword">Change Password</a>
+
+                    <a href="#" id="logoutButton">Logout</a>
+
+                </div>
+
+            </div>
+
         </div>
 
         <!-- ===== Data table card ===== -->
@@ -244,15 +350,15 @@ table.data-table td input[type=text],table.data-table td input[type=email]{width
 
             <table class="data-table" id="dataTable">
                 <thead>
-                    <tr>
-                        <th style="width:36px"><input type="checkbox" id="selectAll"></th>
-                        <th class="sortable" data-key="id">ID<span class="arrow"></span></th>
-                        <th class="sortable" data-key="name">Name<span class="arrow"></span></th>
-                        <th class="sortable" data-key="email">Email<span class="arrow"></span></th>
-                        <th class="sortable" data-key="role">Role<span class="arrow"></span></th>
-                        <th class="sortable" data-key="status">Status<span class="arrow"></span></th>
-                        <th style="width:90px">Actions</th>
-                    </tr>
+                <tr>
+                    <th style="width:36px"><input type="checkbox" id="selectAll"></th>
+                    <th class="sortable" data-key="id">ID<span class="arrow"></span></th>
+                    <th class="sortable" data-key="name">Name<span class="arrow"></span></th>
+                    <th class="sortable" data-key="email">Email<span class="arrow"></span></th>
+                    <th class="sortable" data-key="role">Role<span class="arrow"></span></th>
+                    <th class="sortable" data-key="status">Status<span class="arrow"></span></th>
+                    <th style="width:90px">Actions</th>
+                </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
@@ -295,290 +401,291 @@ table.data-table td input[type=text],table.data-table td input[type=email]{width
 </div>
 
 <script>
-document.getElementById("logoutButton").addEventListener("click", function(){
-    if(confirm("Are you sure you want to logout?")){
-        window.location.href="index.html";
-    }
-});
+    document.getElementById("logoutButton").addEventListener("click", function(e){
+        e.preventDefault();
+        if(confirm("Are you sure you want to logout?")){
+            window.location.href="index.html";
+        }
+    });
 </script>
 
 <script>
-/* ===== Toast helper ===== */
-const toast = document.getElementById("toast");
-const toastIcon = document.getElementById("toastIcon");
-const toastTitle = document.getElementById("toastTitle");
-const toastDesc = document.getElementById("toastDesc");
-const toastClose = document.getElementById("toastClose");
-let toastTimer;
+    /* ===== Toast helper ===== */
+    const toast = document.getElementById("toast");
+    const toastIcon = document.getElementById("toastIcon");
+    const toastTitle = document.getElementById("toastTitle");
+    const toastDesc = document.getElementById("toastDesc");
+    const toastClose = document.getElementById("toastClose");
+    let toastTimer;
 
-function showToast(title, desc, isError){
-    clearTimeout(toastTimer);
-    toast.classList.toggle("error", !!isError);
-    toastIcon.innerHTML = isError ? "&times;" : "&#10003;";
-    toastTitle.textContent = title;
-    toastDesc.textContent = desc;
-    toast.classList.add("show");
-    toastTimer = setTimeout(hideToast, 3500);
-}
-function hideToast(){ toast.classList.remove("show"); }
-toastClose.addEventListener("click", hideToast);
+    function showToast(title, desc, isError){
+        clearTimeout(toastTimer);
+        toast.classList.toggle("error", !!isError);
+        toastIcon.innerHTML = isError ? "&times;" : "&#10003;";
+        toastTitle.textContent = title;
+        toastDesc.textContent = desc;
+        toast.classList.add("show");
+        toastTimer = setTimeout(hideToast, 3500);
+    }
+    function hideToast(){ toast.classList.remove("show"); }
+    toastClose.addEventListener("click", hideToast);
 
-/* ===== Delete confirm modal helper ===== */
-const modalOverlay = document.getElementById("modalOverlay");
-const modalMessage = document.getElementById("modalMessage");
-const modalCancel = document.getElementById("modalCancel");
-const modalConfirm = document.getElementById("modalConfirm");
-let confirmAction = null;
+    /* ===== Delete confirm modal helper ===== */
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalMessage = document.getElementById("modalMessage");
+    const modalCancel = document.getElementById("modalCancel");
+    const modalConfirm = document.getElementById("modalConfirm");
+    let confirmAction = null;
 
-function openConfirm(message, onConfirm){
-    modalMessage.textContent = message;
-    confirmAction = onConfirm;
-    modalOverlay.classList.add("show");
-}
-function closeConfirm(){
-    modalOverlay.classList.remove("show");
-    confirmAction = null;
-}
-modalCancel.addEventListener("click", closeConfirm);
-modalOverlay.addEventListener("click", function(e){
-    if(e.target === modalOverlay) closeConfirm();
-});
-modalConfirm.addEventListener("click", function(){
-    if(typeof confirmAction === "function") confirmAction();
-    closeConfirm();
-});
-
-/* =========================================================
-   DATA TABLE
-   ========================================================= */
-let records = [
-    {id:101, name:"Alice Johnson", email:"alice.johnson@example.com", role:"Admin", status:"Active"},
-    {id:102, name:"Brian Smith", email:"brian.smith@example.com", role:"Tester", status:"Active"},
-    {id:103, name:"Carla Diaz", email:"carla.diaz@example.com", role:"Developer", status:"Inactive"},
-    {id:104, name:"David Kim", email:"david.kim@example.com", role:"Tester", status:"Active"},
-    {id:105, name:"Emma Watson", email:"emma.watson@example.com", role:"Manager", status:"Active"},
-    {id:106, name:"Farhan Ali", email:"farhan.ali@example.com", role:"Developer", status:"Inactive"},
-    {id:107, name:"Grace Lee", email:"grace.lee@example.com", role:"Tester", status:"Active"},
-    {id:108, name:"Henry Ford", email:"henry.ford@example.com", role:"Admin", status:"Active"},
-    {id:109, name:"Isla Moore", email:"isla.moore@example.com", role:"Developer", status:"Active"},
-    {id:110, name:"Jack Ryan", email:"jack.ryan@example.com", role:"Manager", status:"Inactive"},
-    {id:111, name:"Karen Page", email:"karen.page@example.com", role:"Tester", status:"Active"},
-    {id:112, name:"Liam Neeson", email:"liam.neeson@example.com", role:"Developer", status:"Active"},
-    {id:113, name:"Maria Garcia", email:"maria.garcia@example.com", role:"Admin", status:"Inactive"},
-    {id:114, name:"Noah Davis", email:"noah.davis@example.com", role:"Tester", status:"Active"},
-    {id:115, name:"Olivia Brown", email:"olivia.brown@example.com", role:"Manager", status:"Active"},
-];
-
-let sortKey = "id";
-let sortDir = 1;
-let currentPage = 1;
-let pageSize = 10;
-let searchTerm = "";
-let editingId = null;
-const selectedIds = new Set();
-
-const tableBody = document.getElementById("tableBody");
-const searchInput = document.getElementById("searchInput");
-const selectAll = document.getElementById("selectAll");
-const selectedCount = document.getElementById("selectedCount");
-const bulkDeleteBtn = document.getElementById("bulkDeleteBtn");
-const pageNumbers = document.getElementById("pageNumbers");
-const prevPage = document.getElementById("prevPage");
-const nextPage = document.getElementById("nextPage");
-const pageSizeSelect = document.getElementById("pageSizeSelect");
-
-function getFiltered(){
-    const term = searchTerm.trim().toLowerCase();
-    let data = records.filter(r =>
-        !term || r.name.toLowerCase().includes(term) || r.email.toLowerCase().includes(term)
-    );
-    data.sort((a,b) => {
-        const av = a[sortKey], bv = b[sortKey];
-        if(typeof av === "number") return (av - bv) * sortDir;
-        return av.toString().localeCompare(bv.toString()) * sortDir;
+    function openConfirm(message, onConfirm){
+        modalMessage.textContent = message;
+        confirmAction = onConfirm;
+        modalOverlay.classList.add("show");
+    }
+    function closeConfirm(){
+        modalOverlay.classList.remove("show");
+        confirmAction = null;
+    }
+    modalCancel.addEventListener("click", closeConfirm);
+    modalOverlay.addEventListener("click", function(e){
+        if(e.target === modalOverlay) closeConfirm();
     });
-    return data;
-}
+    modalConfirm.addEventListener("click", function(){
+        if(typeof confirmAction === "function") confirmAction();
+        closeConfirm();
+    });
 
-function renderTable(){
-    const filtered = getFiltered();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    if(currentPage > totalPages) currentPage = totalPages;
+    /* =========================================================
+       DATA TABLE
+       ========================================================= */
+    let records = [
+        {id:101, name:"Alice Johnson", email:"alice.johnson@example.com", role:"Admin", status:"Active"},
+        {id:102, name:"Brian Smith", email:"brian.smith@example.com", role:"Tester", status:"Active"},
+        {id:103, name:"Carla Diaz", email:"carla.diaz@example.com", role:"Developer", status:"Inactive"},
+        {id:104, name:"David Kim", email:"david.kim@example.com", role:"Tester", status:"Active"},
+        {id:105, name:"Emma Watson", email:"emma.watson@example.com", role:"Manager", status:"Active"},
+        {id:106, name:"Farhan Ali", email:"farhan.ali@example.com", role:"Developer", status:"Inactive"},
+        {id:107, name:"Grace Lee", email:"grace.lee@example.com", role:"Tester", status:"Active"},
+        {id:108, name:"Henry Ford", email:"henry.ford@example.com", role:"Admin", status:"Active"},
+        {id:109, name:"Isla Moore", email:"isla.moore@example.com", role:"Developer", status:"Active"},
+        {id:110, name:"Jack Ryan", email:"jack.ryan@example.com", role:"Manager", status:"Inactive"},
+        {id:111, name:"Karen Page", email:"karen.page@example.com", role:"Tester", status:"Active"},
+        {id:112, name:"Liam Neeson", email:"liam.neeson@example.com", role:"Developer", status:"Active"},
+        {id:113, name:"Maria Garcia", email:"maria.garcia@example.com", role:"Admin", status:"Inactive"},
+        {id:114, name:"Noah Davis", email:"noah.davis@example.com", role:"Tester", status:"Active"},
+        {id:115, name:"Olivia Brown", email:"olivia.brown@example.com", role:"Manager", status:"Active"},
+    ];
 
-    const start = (currentPage - 1) * pageSize;
-    const pageData = filtered.slice(start, start + pageSize);
+    let sortKey = "id";
+    let sortDir = 1;
+    let currentPage = 1;
+    let pageSize = 10;
+    let searchTerm = "";
+    let editingId = null;
+    const selectedIds = new Set();
 
-    tableBody.innerHTML = "";
+    const tableBody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+    const selectAll = document.getElementById("selectAll");
+    const selectedCount = document.getElementById("selectedCount");
+    const bulkDeleteBtn = document.getElementById("bulkDeleteBtn");
+    const pageNumbers = document.getElementById("pageNumbers");
+    const prevPage = document.getElementById("prevPage");
+    const nextPage = document.getElementById("nextPage");
+    const pageSizeSelect = document.getElementById("pageSizeSelect");
 
-    if(pageData.length === 0){
-        tableBody.innerHTML = '<tr class="empty-row"><td colspan="7">No records found</td></tr>';
+    function getFiltered(){
+        const term = searchTerm.trim().toLowerCase();
+        let data = records.filter(r =>
+            !term || r.name.toLowerCase().includes(term) || r.email.toLowerCase().includes(term)
+        );
+        data.sort((a,b) => {
+            const av = a[sortKey], bv = b[sortKey];
+            if(typeof av === "number") return (av - bv) * sortDir;
+            return av.toString().localeCompare(bv.toString()) * sortDir;
+        });
+        return data;
     }
 
-    pageData.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.dataset.id = r.id;
+    function renderTable(){
+        const filtered = getFiltered();
+        const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+        if(currentPage > totalPages) currentPage = totalPages;
 
-        if(editingId === r.id){
-            tr.innerHTML = `
-                <td></td>
-                <td>${r.id}</td>
-                <td><input type="text" class="edit-name" value="${r.name}"></td>
-                <td><input type="email" class="edit-email" value="${r.email}"></td>
-                <td><input type="text" class="edit-role" value="${r.role}"></td>
-                <td><input type="text" class="edit-status" value="${r.status}"></td>
-                <td class="row-actions">
-                    <button class="icon-btn save" title="Save">&#10003;</button>
-                    <button class="icon-btn cancel" title="Cancel">&times;</button>
-                </td>`;
-        }else{
-            const checked = selectedIds.has(r.id) ? "checked" : "";
-            const statusClass = r.status === "Active" ? "status-active" : "status-inactive";
-            tr.innerHTML = `
-                <td><input type="checkbox" class="row-check" ${checked}></td>
-                <td>${r.id}</td>
-                <td>${r.name}</td>
-                <td>${r.email}</td>
-                <td>${r.role}</td>
-                <td><span class="status-pill ${statusClass}">${r.status}</span></td>
-                <td class="row-actions">
-                    <button class="icon-btn edit" title="Edit">&#9998;</button>
-                    <button class="icon-btn delete" title="Delete">&#128465;</button>
-                </td>`;
+        const start = (currentPage - 1) * pageSize;
+        const pageData = filtered.slice(start, start + pageSize);
+
+        tableBody.innerHTML = "";
+
+        if(pageData.length === 0){
+            tableBody.innerHTML = '<tr class="empty-row"><td colspan="7">No records found</td></tr>';
         }
-        tableBody.appendChild(tr);
-    });
 
-    renderPagination(totalPages);
-    updateBulkUI();
-    updateSortArrows();
-}
+        pageData.forEach(r => {
+            const tr = document.createElement("tr");
+            tr.dataset.id = r.id;
 
-function renderPagination(totalPages){
-    pageNumbers.innerHTML = "";
-    for(let i=1;i<=totalPages;i++){
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        if(i === currentPage) btn.classList.add("active");
-        btn.addEventListener("click", () => { currentPage = i; renderTable(); });
-        pageNumbers.appendChild(btn);
-    }
-    prevPage.disabled = currentPage <= 1;
-    nextPage.disabled = currentPage >= totalPages;
-}
+            if(editingId === r.id){
+                tr.innerHTML = `
+                    <td></td>
+                    <td>${r.id}</td>
+                    <td><input type="text" class="edit-name" value="${r.name}"></td>
+                    <td><input type="email" class="edit-email" value="${r.email}"></td>
+                    <td><input type="text" class="edit-role" value="${r.role}"></td>
+                    <td><input type="text" class="edit-status" value="${r.status}"></td>
+                    <td class="row-actions">
+                        <button class="icon-btn save" title="Save">&#10003;</button>
+                        <button class="icon-btn cancel" title="Cancel">&times;</button>
+                    </td>`;
+            }else{
+                const checked = selectedIds.has(r.id) ? "checked" : "";
+                const statusClass = r.status === "Active" ? "status-active" : "status-inactive";
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="row-check" ${checked}></td>
+                    <td>${r.id}</td>
+                    <td>${r.name}</td>
+                    <td>${r.email}</td>
+                    <td>${r.role}</td>
+                    <td><span class="status-pill ${statusClass}">${r.status}</span></td>
+                    <td class="row-actions">
+                        <button class="icon-btn edit" title="Edit">&#9998;</button>
+                        <button class="icon-btn delete" title="Delete">&#128465;</button>
+                    </td>`;
+            }
+            tableBody.appendChild(tr);
+        });
 
-function updateSortArrows(){
-    document.querySelectorAll("th.sortable").forEach(th => {
-        const arrow = th.querySelector(".arrow");
-        if(th.dataset.key === sortKey){
-            arrow.textContent = sortDir === 1 ? "▲" : "▼";
-        }else{
-            arrow.textContent = "";
-        }
-    });
-}
-
-function updateBulkUI(){
-    selectedCount.textContent = `${selectedIds.size} selected`;
-    bulkDeleteBtn.disabled = selectedIds.size === 0;
-    const visibleIds = Array.from(tableBody.querySelectorAll("tr[data-id]")).map(tr => Number(tr.dataset.id));
-    selectAll.checked = visibleIds.length > 0 && visibleIds.every(id => selectedIds.has(id));
-}
-
-document.querySelectorAll("th.sortable").forEach(th => {
-    th.addEventListener("click", () => {
-        const key = th.dataset.key;
-        if(sortKey === key){
-            sortDir *= -1;
-        }else{
-            sortKey = key;
-            sortDir = 1;
-        }
-        renderTable();
-    });
-});
-
-searchInput.addEventListener("input", function(){
-    searchTerm = this.value;
-    currentPage = 1;
-    renderTable();
-});
-
-prevPage.addEventListener("click", () => { if(currentPage > 1){ currentPage--; renderTable(); } });
-nextPage.addEventListener("click", () => { currentPage++; renderTable(); });
-pageSizeSelect.addEventListener("change", function(){
-    pageSize = Number(this.value);
-    currentPage = 1;
-    renderTable();
-});
-
-selectAll.addEventListener("change", function(){
-    const visibleRows = tableBody.querySelectorAll("tr[data-id]");
-    visibleRows.forEach(tr => {
-        const id = Number(tr.dataset.id);
-        if(this.checked) selectedIds.add(id);
-        else selectedIds.delete(id);
-    });
-    renderTable();
-});
-
-tableBody.addEventListener("click", function(e){
-    const tr = e.target.closest("tr[data-id]");
-    if(!tr) return;
-    const id = Number(tr.dataset.id);
-
-    if(e.target.classList.contains("row-check")){
-        if(e.target.checked) selectedIds.add(id);
-        else selectedIds.delete(id);
+        renderPagination(totalPages);
         updateBulkUI();
-        return;
+        updateSortArrows();
     }
 
-    if(e.target.classList.contains("edit")){
-        editingId = id;
-        renderTable();
-        return;
+    function renderPagination(totalPages){
+        pageNumbers.innerHTML = "";
+        for(let i=1;i<=totalPages;i++){
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            if(i === currentPage) btn.classList.add("active");
+            btn.addEventListener("click", () => { currentPage = i; renderTable(); });
+            pageNumbers.appendChild(btn);
+        }
+        prevPage.disabled = currentPage <= 1;
+        nextPage.disabled = currentPage >= totalPages;
     }
 
-    if(e.target.classList.contains("save")){
-        const record = records.find(r => r.id === id);
-        record.name = tr.querySelector(".edit-name").value.trim() || record.name;
-        record.email = tr.querySelector(".edit-email").value.trim() || record.email;
-        record.role = tr.querySelector(".edit-role").value.trim() || record.role;
-        record.status = tr.querySelector(".edit-status").value.trim() || record.status;
-        editingId = null;
-        renderTable();
-        showToast("Record updated", `${record.name}'s details were saved.`);
-        return;
-    }
-
-    if(e.target.classList.contains("cancel")){
-        editingId = null;
-        renderTable();
-        return;
-    }
-
-    if(e.target.classList.contains("delete")){
-        const record = records.find(r => r.id === id);
-        openConfirm(`Delete user "${record.name}"? This action cannot be undone.`, () => {
-            records = records.filter(r => r.id !== id);
-            selectedIds.delete(id);
-            renderTable();
-            showToast("User deleted", `${record.name} was removed from the table.`);
+    function updateSortArrows(){
+        document.querySelectorAll("th.sortable").forEach(th => {
+            const arrow = th.querySelector(".arrow");
+            if(th.dataset.key === sortKey){
+                arrow.textContent = sortDir === 1 ? "▲" : "▼";
+            }else{
+                arrow.textContent = "";
+            }
         });
     }
-});
 
-bulkDeleteBtn.addEventListener("click", function(){
-    const count = selectedIds.size;
-    openConfirm(`Delete ${count} selected user(s)? This action cannot be undone.`, () => {
-        records = records.filter(r => !selectedIds.has(r.id));
-        selectedIds.clear();
-        renderTable();
-        showToast("Users deleted", `${count} record(s) were removed.`);
+    function updateBulkUI(){
+        selectedCount.textContent = `${selectedIds.size} selected`;
+        bulkDeleteBtn.disabled = selectedIds.size === 0;
+        const visibleIds = Array.from(tableBody.querySelectorAll("tr[data-id]")).map(tr => Number(tr.dataset.id));
+        selectAll.checked = visibleIds.length > 0 && visibleIds.every(id => selectedIds.has(id));
+    }
+
+    document.querySelectorAll("th.sortable").forEach(th => {
+        th.addEventListener("click", () => {
+            const key = th.dataset.key;
+            if(sortKey === key){
+                sortDir *= -1;
+            }else{
+                sortKey = key;
+                sortDir = 1;
+            }
+            renderTable();
+        });
     });
-});
 
-renderTable();
+    searchInput.addEventListener("input", function(){
+        searchTerm = this.value;
+        currentPage = 1;
+        renderTable();
+    });
+
+    prevPage.addEventListener("click", () => { if(currentPage > 1){ currentPage--; renderTable(); } });
+    nextPage.addEventListener("click", () => { currentPage++; renderTable(); });
+    pageSizeSelect.addEventListener("change", function(){
+        pageSize = Number(this.value);
+        currentPage = 1;
+        renderTable();
+    });
+
+    selectAll.addEventListener("change", function(){
+        const visibleRows = tableBody.querySelectorAll("tr[data-id]");
+        visibleRows.forEach(tr => {
+            const id = Number(tr.dataset.id);
+            if(this.checked) selectedIds.add(id);
+            else selectedIds.delete(id);
+        });
+        renderTable();
+    });
+
+    tableBody.addEventListener("click", function(e){
+        const tr = e.target.closest("tr[data-id]");
+        if(!tr) return;
+        const id = Number(tr.dataset.id);
+
+        if(e.target.classList.contains("row-check")){
+            if(e.target.checked) selectedIds.add(id);
+            else selectedIds.delete(id);
+            updateBulkUI();
+            return;
+        }
+
+        if(e.target.classList.contains("edit")){
+            editingId = id;
+            renderTable();
+            return;
+        }
+
+        if(e.target.classList.contains("save")){
+            const record = records.find(r => r.id === id);
+            record.name = tr.querySelector(".edit-name").value.trim() || record.name;
+            record.email = tr.querySelector(".edit-email").value.trim() || record.email;
+            record.role = tr.querySelector(".edit-role").value.trim() || record.role;
+            record.status = tr.querySelector(".edit-status").value.trim() || record.status;
+            editingId = null;
+            renderTable();
+            showToast("Record updated", `${record.name}'s details were saved.`);
+            return;
+        }
+
+        if(e.target.classList.contains("cancel")){
+            editingId = null;
+            renderTable();
+            return;
+        }
+
+        if(e.target.classList.contains("delete")){
+            const record = records.find(r => r.id === id);
+            openConfirm(`Delete user "${record.name}"? This action cannot be undone.`, () => {
+                records = records.filter(r => r.id !== id);
+                selectedIds.delete(id);
+                renderTable();
+                showToast("User deleted", `${record.name} was removed from the table.`);
+            });
+        }
+    });
+
+    bulkDeleteBtn.addEventListener("click", function(){
+        const count = selectedIds.size;
+        openConfirm(`Delete ${count} selected user(s)? This action cannot be undone.`, () => {
+            records = records.filter(r => !selectedIds.has(r.id));
+            selectedIds.clear();
+            renderTable();
+            showToast("Users deleted", `${count} record(s) were removed.`);
+        });
+    });
+
+    renderTable();
 </script>
 
 </body>
