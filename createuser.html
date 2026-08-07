@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create User</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=s9Wy4R3zvQQV_F4L37UtHtzrkWqxWbPNgnJtFGMpHAqLCt2v_Txi0DShVl0GcmrtF72hGmVFEP26mtc7FWPeGMVUukn-j31hj7tiSUUq1cQs5V_I6mlxMnOPdUCGUUqd4L_1cNx6Aud1JPZESpv_bzRgoifiC3HIwTDwsp3HaTeq0pnsvaIJNiiYbdH6KC2isfOevmzjOVdHZoxVMhwu1LOyyM7P4hkWHKK_WhJZBVlOYx5cydHc9UIOYw7squRLToSKbYJ0MB9EFEvsOgDs3pnVRHAuqt6pO3E-RR3v_cx5qOF2kv28JXW3KMvK5rJN" charset="UTF-8"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#eef3f8}
+
+/* ===== Layout (matches dashboard.html) ===== */
+.container{display:flex;min-height:100vh}
+
+/* LEFT MENU - copied from dashboard.html */
+.sidebar{
+    width:270px;
+    background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
+    color:white;
+    overflow:auto;
+}
+
+.profile{
+    text-align:center;
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.profile img{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:4px solid white;
+}
+
+.profile h2{
+    margin-top:15px;
+}
+
+.profile p{
+    color:#d7d7d7;
+    font-size:14px;
+}
+
+.menu{
+    padding:20px;
+}
+
+.menu h3{
+    color:#FFD54F;
+    margin-bottom:12px;
+}
+
+.menu a{
+    display:block;
+    padding:14px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:white;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#00BCD4;
+    transform:translateX(8px);
+}
+
+/* RIGHT PANEL */
+.main{
+    flex:1;
+    overflow:auto;
+}
+
+.header{
+    background:white;
+    padding:20px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+/* Logout button - copied from dashboard.html */
+.header button{
+    padding:10px 25px;
+    background:#E53935;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* ===== Create User page specific styles ===== */
+.card{margin:30px;background:#fff;border-radius:15px;padding:25px;box-shadow:0 6px 15px rgba(0,0,0,.1)}
+h1{font-size:34px;color:#1a1a2e}
+.subtitle{color:#777;margin-bottom:25px}
+.section{font-size:22px;margin:25px 0 15px;border-bottom:1px solid #eee;padding-bottom:8px;color:#0f3460}
+.row{display:flex;align-items:center;margin:14px 0}
+label{width:220px;font-size:15px}
+.req{color:red}
+input[type=text],input[type=email],input[type=password]{flex:1;padding:11px;border:1px solid #ccc;border-radius:4px}
+.radio-group{display:flex;gap:20px}
+.footer{display:flex;justify-content:flex-end;align-items:center;gap:15px;margin-top:35px}
+button.cont{background:#25a9e0;color:#fff;border:none;padding:10px 22px;border-radius:5px;cursor:pointer;transition:background .2s,opacity .2s}
+button.cont:disabled{background:#9fb3c8;cursor:not-allowed;opacity:.7}
+button.cont:not(:disabled):hover{background:#1c8cba}
+
+@media(max-width:900px){
+.container{flex-direction:column}
+.sidebar{width:100%}
+.row{flex-direction:column;align-items:flex-start}
+label{width:100%;margin-bottom:6px}
+}
+
+/* ===== Toast notification ===== */
+.toast{
+    position:fixed;
+    top:25px;
+    right:25px;
+    background:#fff;
+    border-left:4px solid #2ecc71;
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+    padding:14px 18px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    min-width:280px;
+    max-width:360px;
+    transform:translateX(120%);
+    opacity:0;
+    transition:transform .35s ease, opacity .35s ease;
+    z-index:1000;
+}
+
+.toast.show{
+    transform:translateX(0);
+    opacity:1;
+}
+
+.toast-icon{
+    width:24px;
+    height:24px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:#2ecc71;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+.toast-text p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.5;
+}
+
+.toast-title{
+    font-weight:600;
+    color:#1a1a2e;
+}
+
+.toast-desc{
+    color:#777;
+}
+
+.toast-close{
+    background:none;
+    border:none;
+    color:#aaa;
+    font-size:16px;
+    cursor:pointer;
+    line-height:1;
+    margin-left:auto;
+    padding:0;
+}
+
+.toast-close:hover{
+    color:#555;
+}
+
+@media(max-width:480px){
+.toast{
+    top:15px;
+    right:15px;
+    left:15px;
+    max-width:none;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <!-- LEFT FRAME (matches dashboard.html) -->
+    <div class="sidebar">
+
+        <div class="profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h2 id="loggedInUser">Administrator</h2>
+            <p>Automation Tester</p>
+        </div>
+
+        <div class="menu">
+            <h3>Navigation</h3>
+            <a href="dashboard.html" id="navDashboard">Dashboard</a>
+            <a href="createuser.html" id="navUsers" class="active">Create User</a>
+			<a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
+			<a href="datatable.html" id="navDataTable">Data Table</a>
+        </div>
+
+    </div>
+
+    <!-- RIGHT FRAME -->
+    <div class="main">
+
+        <div class="header">
+
+            <h2 id="dashboardTitle">
+                Selenium & Playwright Practice Dashboard
+            </h2>
+
+            <button id="logoutButton">
+                <h2>Logout</h2>
+            </button>
+
+        </div>
+
+        <div class="card">
+            <h1>Create User</h1>
+            <div class="subtitle">Enter the details to create a new user</div>
+
+            <div class="section">Your Personal Details</div>
+            <div class="row"><label><span class="req">*</span> First Name</label><input type="text" class="required-field" placeholder="First Name"></div>
+            <div class="row"><label><span class="req">*</span> Last Name</label><input type="text" class="required-field" placeholder="Last Name"></div>
+            <div class="row"><label><span class="req">*</span> E-Mail</label><input type="email" class="required-field" placeholder="E-Mail"></div>
+            <div class="row"><label><span class="req">*</span> Telephone</label><input type="text" class="required-field" placeholder="Telephone"></div>
+
+            <div class="section">Your Password</div>
+            <div class="row"><label><span class="req">*</span> Password</label><input type="password" class="required-field" placeholder="Password"></div>
+            <div class="row"><label><span class="req">*</span> Password Confirm</label><input type="password" class="required-field" placeholder="Password Confirm"></div>
+
+            <div class="section">Newsletter</div>
+            <div class="row">
+                <label>Subscribe</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="n"> Yes</label>
+                    <label><input type="radio" name="n" checked> No</label>
+                </div>
+            </div>
+
+            <div class="footer">
+
+                <label style="width:auto">
+                    <input type="checkbox" id="privacyCheck">
+                    I have read and agree to the
+                    <a href="#">Privacy Policy</a>
+                </label>
+
+                <button class="cont" id="continueBtn" disabled>
+                    Continue
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="toast-icon">&#10003;</div>
+    <div class="toast-text">
+        <p class="toast-title">User created</p>
+        <p class="toast-desc">Details entered successfully.</p>
+    </div>
+    <button class="toast-close" id="toastClose" aria-label="Close">&times;</button>
+</div>
+
+<script>
+
+document.getElementById("logoutButton").addEventListener("click", function(){
+
+    if(confirm("Are you sure you want to logout?")){
+
+        window.location.href="index.html";
+
+    }
+
+});
+
+</script>
+
+<script>
+
+const requiredFields = document.querySelectorAll(".required-field");
+const privacyCheck = document.getElementById("privacyCheck");
+const continueBtn = document.getElementById("continueBtn");
+
+function validateForm(){
+
+    let allFilled = true;
+
+    requiredFields.forEach(field => {
+        if(field.value.trim() === ""){
+            allFilled = false;
+        }
+    });
+
+    if(allFilled && privacyCheck.checked){
+        continueBtn.disabled = false;
+    }else{
+        continueBtn.disabled = true;
+    }
+}
+
+requiredFields.forEach(field=>{
+    field.addEventListener("input", validateForm);
+});
+
+privacyCheck.addEventListener("change", validateForm);
+
+const toast = document.getElementById("toast");
+const toastClose = document.getElementById("toastClose");
+let toastTimer;
+
+function showToast(){
+    clearTimeout(toastTimer);
+    toast.classList.add("show");
+    toastTimer = setTimeout(hideToast, 4000);
+}
+
+function hideToast(){
+    toast.classList.remove("show");
+}
+
+toastClose.addEventListener("click", hideToast);
+
+continueBtn.addEventListener("click", function(){
+    showToast();
+
+    requiredFields.forEach(field => {
+        field.value = "";
+    });
+
+    privacyCheck.checked = false;
+
+    continueBtn.disabled = true;
+});
+
+</script>
+
+</body>
+</html>

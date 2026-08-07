@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDET Practice Dashboard - Forms</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{background:#eef3f8;}
+.container{display:flex;min-height:100vh;}
+.sidebar{width:270px;background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);color:white;overflow:auto;}
+.profile{text-align:center;padding:25px;border-bottom:1px solid rgba(255,255,255,.15);}
+.profile img{width:100px;height:100px;border-radius:50%;border:4px solid white;}
+.profile h2{margin-top:15px;}
+.profile p{color:#d7d7d7;font-size:14px;}
+.menu{padding:20px;}
+.menu h3{color:#FFD54F;margin-bottom:12px;}
+.menu a{display:block;padding:14px;margin-bottom:10px;text-decoration:none;color:white;border-radius:10px;transition:.3s;}
+.menu a:hover{background:#00BCD4;transform:translateX(8px);}
+.menu a.active{background:#00BCD4;}
+.main{flex:1;overflow:auto;}
+.header{background:white;padding:20px 35px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,.1);}
+.header button{padding:10px 25px;background:#E53935;color:white;border:none;border-radius:8px;cursor:pointer;}
+.form-section{margin:30px;background:white;border-radius:15px;padding:30px;box-shadow:0 6px 15px rgba(0,0,0,.1);}
+.form-section h2{margin-bottom:25px;color:#16213e;}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:25px;}
+.form-group{background:#f8fafc;border:1px solid #e3e8ef;border-radius:12px;padding:20px;transition:.3s;}
+.form-group:hover{box-shadow:0 6px 15px rgba(0,0,0,.08);transform:translateY(-3px);}
+.form-group label{display:block;font-weight:600;color:#555;margin-bottom:12px;}
+.form-group input[type="text"],.form-group textarea,.form-group select,.form-group input[type="date"],.form-group input[type="time"]{width:100%;padding:10px 12px;border:1px solid #ccd5e0;border-radius:8px;font-size:14px;font-family:inherit;}
+.form-group textarea{resize:vertical;min-height:90px;}
+.form-group select[multiple]{min-height:110px;}
+.checkbox-row,.radio-row{display:flex;flex-wrap:wrap;gap:18px;}
+.checkbox-row label,.radio-row label{display:flex;align-items:center;gap:8px;font-weight:400;color:#333;margin-bottom:0;}
+.checkbox-row input,.radio-row input{width:16px;height:16px;}
+.slider-wrap{display:flex;align-items:center;gap:15px;}
+.slider-wrap input[type="range"]{flex:1;}
+#sliderValue{font-weight:600;color:#1565C0;min-width:40px;text-align:right;}
+.color-wrap{display:flex;align-items:center;gap:15px;}
+.color-wrap input[type="color"]{width:60px;height:42px;border:1px solid #ccd5e0;border-radius:8px;cursor:pointer;}
+#colorValue{font-weight:600;color:#1565C0;}
+#formResult{margin-top:25px;background:#0f3460;color:#dcedc8;padding:20px;border-radius:10px;font-family:monospace;font-size:13px;white-space:pre-wrap;display:none;}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h2 id="loggedInUser">Administrator</h2>
+            <p>Automation Tester</p>
+        </div>
+        <div class="menu">
+            <h3>Navigation</h3>
+            <a href="dashboard.html" id="navDashboard">Dashboard</a>
+            <a href="createuser.html" id="navUsers">Create User</a>
+            <a href="locatorspractice.html" id="locatorspractice" class="active">Locators Practice</a>
+            <a href="datatable.html" id="navDataTable">Data Table</a>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h2 id="dashboardTitle">Selenium & Playwright Practice Dashboard</h2>
+            <button id="logoutButton"><h2>Logout</h2></button>
+        </div>
+
+        <div class="form-section">
+            <h2>Locators Practice</h2>
+            <form id="practiceForm">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="textboxInput">Textbox</label>
+                        <input type="text" id="textboxInput" name="textbox" placeholder="Enter some text">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="textareaInput">TextArea</label>
+                        <textarea id="textareaInput" name="textarea" placeholder="Enter a longer description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Checkbox</label>
+                        <div class="checkbox-row" id="checkboxGroup">
+                            <label><input type="checkbox" id="checkboxOption1" name="checkboxOption1" value="Automation"> Automation</label>
+                            <label><input type="checkbox" id="checkboxOption2" name="checkboxOption2" value="Manual"> Manual</label>
+                            <label><input type="checkbox" id="checkboxOption3" name="checkboxOption3" value="Performance"> Performance</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Radio</label>
+                        <div class="radio-row" id="radioGroup">
+                            <label><input type="radio" id="radioMale" name="gender" value="Male"> Male</label>
+                            <label><input type="radio" id="radioFemale" name="gender" value="Female"> Female</label>
+                            <label><input type="radio" id="radioOther" name="gender" value="Other"> Other</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dropdownSelect">Dropdown</label>
+                        <select id="dropdownSelect" name="dropdown">
+                            <option value="">-- Select an option --</option>
+                            <option value="Selenium">Selenium</option>
+                            <option value="Playwright">Playwright</option>
+                            <option value="Cypress">Cypress</option>
+                            <option value="Appium">Appium</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="multiSelect">Multi Select</label>
+                        <select id="multiSelect" name="multiSelect" multiple>
+                            <option value="Java">Java</option>
+                            <option value="Python">Python</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="C#">C#</option>
+                            <option value="TypeScript">TypeScript</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="datePicker">Date Picker</label>
+                        <input type="date" id="datePicker" name="datePicker">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timePicker">Time Picker</label>
+                        <input type="time" id="timePicker" name="timePicker">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sliderInput">Slider</label>
+                        <div class="slider-wrap">
+                            <input type="range" id="sliderInput" name="slider" min="0" max="100" value="50">
+                            <span id="sliderValue">50</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="colorPicker">Color Picker</label>
+                        <div class="color-wrap">
+                            <input type="color" id="colorPicker" name="colorPicker" value="#1976d2">
+                            <span id="colorValue">#1976d2</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="formResult"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("logoutButton").addEventListener("click", function(){
+    if(confirm("Are you sure you want to logout?")){
+        window.location.href="index.html";
+    }
+});
+
+const sliderInput = document.getElementById("sliderInput");
+const sliderValue = document.getElementById("sliderValue");
+sliderInput.addEventListener("input", function(){
+    sliderValue.textContent = sliderInput.value;
+});
+
+const colorPicker = document.getElementById("colorPicker");
+const colorValue = document.getElementById("colorValue");
+colorPicker.addEventListener("input", function(){
+    colorValue.textContent = colorPicker.value;
+});
+</script>
+
+</body>
+</html>
