@@ -223,8 +223,8 @@ button:hover{
     </div>
 
     <div class="creds-hint">
-        Username : <strong>admin</strong><br>
-        Password : <strong>testing</strong>
+        Username : <strong>administrator</strong><br>
+        Password : <strong>Admin@123</strong>
     </div>
 
     <form id="loginForm">
@@ -291,7 +291,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     const password = document.getElementById("password").value.trim();
 
     // Valid credentials
-    if (username === "admin" && password === "testing") {
+    if (username === "administrator" && password === "Admin@123") {
 
         // Redirect to Dashboard
         window.location.href = "dashboard.html";
