@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SDET Practice Dashboard - E-commerce</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    background:#eef3f8;
+}
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* LEFT MENU */
+
+.sidebar{
+
+    width:270px;
+    background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
+    color:white;
+    overflow:auto;
+}
+
+.profile{
+
+    text-align:center;
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+
+}
+
+.profile img{
+
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:4px solid white;
+}
+
+.profile h2{
+    margin-top:15px;
+}
+
+.profile p{
+
+    color:#d7d7d7;
+    font-size:14px;
+}
+
+.menu{
+
+    padding:20px;
+}
+
+.menu h3{
+
+    color:#FFD54F;
+    margin-bottom:12px;
+}
+
+.menu a{
+
+    display:block;
+    padding:14px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:white;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+
+    background:#00BCD4;
+    transform:translateX(8px);
+}
+
+/* RIGHT PANEL */
+
+.main{
+
+    flex:1;
+    overflow:auto;
+}
+
+.header{
+
+    background:white;
+    padding:20px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.header-right{
+
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+/* CART ICON */
+
+.cart-wrapper{
+
+    position:relative;
+    cursor:pointer;
+}
+
+.cart-icon{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#f2f5f9;
+    font-size:22px;
+    transition:.3s;
+}
+
+.cart-icon:hover{
+
+    background:#e3ecf5;
+}
+
+.cart-badge{
+
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    background:#E53935;
+    color:white;
+    font-size:12px;
+    font-weight:700;
+    min-width:20px;
+    height:20px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 4px;
+}
+
+/* PROFILE DROPDOWN */
+
+.profile-menu{
+
+    position:relative;
+}
+
+.profile-trigger{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-radius:30px;
+    background:#f2f5f9;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.profile-trigger:hover{
+
+    background:#e3ecf5;
+}
+
+.profile-trigger img{
+
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #1976D2;
+}
+
+.profile-trigger span{
+
+    font-weight:600;
+    color:#16213e;
+    font-size:15px;
+}
+
+.profile-trigger .arrow{
+
+    font-size:12px;
+    color:#666;
+    transition:.3s;
+}
+
+.profile-menu:hover .arrow{
+
+    transform:rotate(180deg);
+}
+
+.dropdown-menu{
+
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    min-width:190px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    overflow:hidden;
+    z-index:100;
+}
+
+.profile-menu::after{
+
+    content:"";
+    position:absolute;
+    top:100%;
+    right:0;
+    height:10px;
+    width:100%;
+}
+
+.profile-menu:hover .dropdown-menu{
+
+    display:block;
+}
+
+.dropdown-menu a{
+
+    display:block;
+    padding:14px 18px;
+    text-decoration:none;
+    color:#333;
+    font-size:14px;
+    transition:.2s;
+}
+
+.dropdown-menu a:hover{
+
+    background:#f2f5f9;
+}
+
+.dropdown-menu a#logoutButton{
+
+    color:#E53935;
+    font-weight:600;
+    border-top:1px solid #eee;
+}
+
+.page-heading{
+
+    padding:30px 30px 0;
+}
+
+.page-heading h1{
+
+    color:#16213e;
+    font-size:28px;
+}
+
+.page-heading p{
+
+    color:#667;
+    margin-top:6px;
+}
+
+/* PRODUCT GRID */
+
+.products{
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+    padding:25px 30px 40px;
+}
+
+.product-card{
+
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 6px 15px rgba(0,0,0,.1);
+    transition:.3s;
+    display:flex;
+    flex-direction:column;
+}
+
+.product-card:hover{
+
+    transform:translateY(-6px);
+}
+
+.product-card img{
+
+    width:100%;
+    height:190px;
+    object-fit:cover;
+}
+
+.product-info{
+
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
+
+.product-info h3{
+
+    color:#16213e;
+    font-size:18px;
+    margin-bottom:8px;
+}
+
+.product-info p.desc{
+
+    color:#666;
+    font-size:14px;
+    line-height:1.5;
+    flex:1;
+}
+
+.product-footer{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:18px;
+}
+
+.price{
+
+    font-size:20px;
+    font-weight:700;
+    color:#1565C0;
+}
+
+.add-to-cart-btn{
+
+    background:#00BCD4;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+    transition:.3s;
+}
+
+.add-to-cart-btn:hover{
+
+    background:#0097A7;
+}
+
+.add-to-cart-btn.added{
+
+    background:#43A047;
+}
+
+/* TOAST */
+
+.toast{
+
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    background:#16213e;
+    color:white;
+    padding:16px 22px;
+    border-radius:10px;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:.3s;
+    z-index:999;
+}
+
+.toast.show{
+
+    opacity:1;
+    transform:translateY(0);
+}
+
+.toast .checkmark{
+
+    color:#4CAF50;
+    font-weight:700;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT FRAME -->
+
+    <div class="sidebar">
+
+        <div class="profile">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+            <h2 id="loggedInUser">Administrator</h2>
+
+            <p>Automation Tester</p>
+
+        </div>
+
+        <div class="menu">
+
+            <h3>Navigation</h3>
+
+            <a href="dashboard.html" id="navDashboard">Dashboard</a>
+
+            <a href="createuser.html" id="navUsers">Create User</a>
+
+            <a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
+
+            <a href="datatable.html" id="navDataTable">Data Table</a>
+
+            <a href="sendmoney.html" id="navSendMoney">Send Money</a>
+
+            <a href="ecommerce.html" id="navEcommerce" class="active">E-commerce</a>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT FRAME -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <h2 id="ecommerceTitle">
+                E-commerce Practice Store
+            </h2>
+
+            <div class="header-right">
+
+                <div class="cart-wrapper" id="cartIcon">
+
+                    <div class="cart-icon">&#128722;</div>
+
+                    <span class="cart-badge" id="cartCount">0</span>
+
+                </div>
+
+                <div class="profile-menu">
+
+                    <div class="profile-trigger">
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                        <span id="loggedInUserHeader">Administrator</span>
+
+                        <span class="arrow">&#9662;</span>
+
+                    </div>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#" id="navAbout">About</a>
+
+                        <a href="#" id="navSupport">Support</a>
+
+                        <a href="#" id="navChangePassword">Change Password</a>
+
+                        <a href="#" id="logoutButton">Logout</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="page-heading">
+
+            <h1>Featured Products</h1>
+
+            <p>Sample catalog for practicing e-commerce automation flows.</p>
+
+        </div>
+
+        <div class="products" id="productGrid">
+
+            <div class="product-card" id="product-1" data-product-name="Trailhead Backpack">
+
+                <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Trailhead Backpack</h3>
+
+                    <p class="desc">Durable everyday backpack with padded laptop sleeve and water-resistant fabric. Great for commuting or short hikes.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$34.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-1" onclick="addToCart(1,'Trailhead Backpack')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-2" data-product-name="Pulse Wireless Headphones">
+
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Pulse Wireless Headphones</h3>
+
+                    <p class="desc">Over-ear headphones with noise cancellation and 20-hour battery life. Perfect companion for testing audio-based flows.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$59.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-2" onclick="addToCart(2,'Pulse Wireless Headphones')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-3" data-product-name="Chrono Sport Watch">
+
+                <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Chrono Sport Watch</h3>
+
+                    <p class="desc">Water-resistant analog watch with stainless steel strap. A timeless accessory for everyday wear.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$89.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-3" onclick="addToCart(3,'Chrono Sport Watch')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-4" data-product-name="Horizon Sunglasses">
+
+                <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Horizon Sunglasses</h3>
+
+                    <p class="desc">Polarized UV-protection sunglasses with a lightweight frame. Ideal for sunny outdoor testing sessions.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$24.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-4" onclick="addToCart(4,'Horizon Sunglasses')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-5" data-product-name="Summit Running Shoes">
+
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Summit Running Shoes</h3>
+
+                    <p class="desc">Lightweight running shoes with breathable mesh upper and cushioned sole for all-day comfort.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$74.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-5" onclick="addToCart(5,'Summit Running Shoes')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-6" data-product-name="Lumen Desk Lamp">
+
+                <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Lumen Desk Lamp</h3>
+
+                    <p class="desc">Adjustable LED desk lamp with 3 brightness modes and USB charging port. Great for late-night automation runs.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$27.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-6" onclick="addToCart(6,'Lumen Desk Lamp')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-7" data-product-name="Wanderer Travel Mug">
+
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Wanderer Travel Mug</h3>
+
+                    <p class="desc">Insulated stainless steel travel mug that keeps drinks hot or cold for up to 8 hours. Leak-proof lid included.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$18.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-7" onclick="addToCart(7,'Wanderer Travel Mug')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-8" data-product-name="Cascade Fleece Jacket">
+
+                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Cascade Fleece Jacket</h3>
+
+                    <p class="desc">Midweight quarter-zip fleece jacket, soft and warm for chilly office mornings or outdoor testing days.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$49.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-8" onclick="addToCart(8,'Cascade Fleece Jacket')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card" id="product-9" data-product-name="Pixel Compact Camera">
+
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80">
+
+                <div class="product-info">
+
+                    <h3>Pixel Compact Camera</h3>
+
+                    <p class="desc">Point-and-shoot digital camera with 20MP sensor and optical zoom. Compact enough to carry anywhere.</p>
+
+                    <div class="product-footer">
+
+                        <span class="price">$129.99</span>
+
+                        <button class="add-to-cart-btn" id="addToCart-9" onclick="addToCart(9,'Pixel Compact Camera')">Add to Cart</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="toast" id="toast">
+
+    <span class="checkmark">&#10003;</span>
+
+    <span id="toastMessage">Item added to cart</span>
+
+</div>
+
+<script>
+
+let cartCount = 0;
+
+function addToCart(productId, productName){
+
+    cartCount++;
+
+    document.getElementById("cartCount").innerText = cartCount;
+
+    const btn = document.getElementById("addToCart-" + productId);
+
+    const originalText = btn.innerText;
+
+    btn.innerText = "Added";
+
+    btn.classList.add("added");
+
+    setTimeout(function(){
+
+        btn.innerText = originalText;
+
+        btn.classList.remove("added");
+
+    }, 1200);
+
+    showToast(productName + " added to cart");
+
+}
+
+function showToast(message){
+
+    const toast = document.getElementById("toast");
+
+    document.getElementById("toastMessage").innerText = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window._toastTimer);
+
+    window._toastTimer = setTimeout(function(){
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+document.getElementById("cartIcon").addEventListener("click", function(){
+
+    showToast("You have " + cartCount + " item(s) in your cart");
+
+});
+
+document.getElementById("logoutButton").addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    if(confirm("Are you sure you want to logout?")){
+
+        window.location.href="index.html";
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

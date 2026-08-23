@@ -1,215 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDET Practice Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDET Practice Login</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
+<style>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Poppins',sans-serif;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 
-        body{
-            height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background-image:url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80");
-            background-size:cover;
-            background-position:center;
-        }
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-image:url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
 
-        body::before{
-            content:"";
-            position:absolute;
-            width:100%;
-            height:100%;
-            background:rgba(0,0,0,.45);
-        }
+body::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+}
 
-        .container{
-            position:relative;
-            width:400px;
-            backdrop-filter:blur(18px);
-            background:rgba(255,255,255,.12);
-            border:1px solid rgba(255,255,255,.25);
-            border-radius:20px;
-            padding:40px;
-            box-shadow:0 15px 35px rgba(0,0,0,.5);
-            color:white;
-        }
+.container{
+    position:relative;
+    width:400px;
+    backdrop-filter:blur(18px);
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 15px 35px rgba(0,0,0,.5);
+    color:white;
+}
 
-        .logo{
-            text-align:center;
-            margin-bottom:25px;
-        }
+.logo{
+    text-align:center;
+    margin-bottom:25px;
+}
 
-        .logo img{
-            width:85px;
-            border-radius:50%;
-            border:3px solid white;
-        }
+.logo img{
+    width:85px;
+    border-radius:50%;
+    border:3px solid white;
+}
 
-        .logo h1{
-            margin-top:12px;
-            font-size:28px;
-        }
+.logo h1{
+    margin-top:12px;
+    font-size:28px;
+}
 
-        .logo p{
-            font-size:14px;
-            opacity:.8;
-        }
+.logo p{
+    font-size:14px;
+    opacity:.8;
+}
 
-        .creds-hint{
-            background:rgba(255,255,255,.15);
-            border:1px solid rgba(255,255,255,.25);
-            border-radius:14px;
-            padding:16px 18px;
-            margin-bottom:25px;
-            font-size:14px;
-            line-height:1.8;
-        }
+.creds-hint{
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:25px;
+    font-size:14px;
+    line-height:1.8;
+}
 
-        .creds-hint strong{
-            color:#FFD54F;
-        }
+.creds-hint strong{
+    color:#FFD54F;
+}
 
-        .input-group{
-            margin-top:20px;
-        }
+.input-group{
+    margin-top:20px;
+}
 
-        .input-group label{
-            display:block;
-            margin-bottom:8px;
-            font-size:14px;
-        }
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+}
 
-        .input-group input{
-            width:100%;
-            padding:14px;
-            border:none;
-            border-radius:10px;
-            outline:none;
-            font-size:15px;
-            background:rgba(255,255,255,.9);
-        }
+.input-group input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+    background:rgba(255,255,255,.9);
+}
 
-        .options{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-top:18px;
-            font-size:14px;
-        }
+.options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:18px;
+    font-size:14px;
+}
 
-        .options a{
-            color:#FFD54F;
-            text-decoration:none;
-        }
+.options a{
+    color:#FFD54F;
+    text-decoration:none;
+}
 
-        .options a:hover{
-            text-decoration:underline;
-        }
+.options a:hover{
+    text-decoration:underline;
+}
 
-        button{
-            width:100%;
-            margin-top:30px;
-            padding:14px;
-            border:none;
-            border-radius:10px;
-            font-size:17px;
-            font-weight:600;
-            cursor:pointer;
-            background:linear-gradient(90deg,#2196F3,#673AB7);
-            color:white;
-            transition:.3s;
-        }
+button{
+    width:100%;
+    margin-top:30px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(90deg,#2196F3,#673AB7);
+    color:white;
+    transition:.3s;
+}
 
-        button:hover{
-            transform:translateY(-2px);
-            box-shadow:0 10px 20px rgba(0,0,0,.4);
-        }
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(0,0,0,.4);
+}
 
-        .footer{
-            text-align:center;
-            margin-top:25px;
-            font-size:13px;
-            opacity:.85;
-        }
+.footer{
+    text-align:center;
+    margin-top:25px;
+    font-size:13px;
+    opacity:.85;
+}
 
-        /* ===== Error toast notification ===== */
-        .toast{
-            position:fixed;
-            top:25px;
-            right:25px;
-            background:#fff;
-            border-left:4px solid #E53935;
-            border-radius:8px;
-            box-shadow:0 8px 24px rgba(0,0,0,.25);
-            padding:14px 18px;
-            display:flex;
-            align-items:flex-start;
-            gap:12px;
-            min-width:280px;
-            max-width:360px;
-            transform:translateX(120%);
-            opacity:0;
-            transition:transform .35s ease, opacity .35s ease;
-            z-index:1000;
-            color:#333;
-        }
+/* ===== Error toast notification ===== */
+.toast{
+    position:fixed;
+    top:25px;
+    right:25px;
+    background:#fff;
+    border-left:4px solid #E53935;
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    padding:14px 18px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    min-width:280px;
+    max-width:360px;
+    transform:translateX(120%);
+    opacity:0;
+    transition:transform .35s ease, opacity .35s ease;
+    z-index:1000;
+    color:#333;
+}
 
-        .toast.show{
-            transform:translateX(0);
-            opacity:1;
-        }
+.toast.show{
+    transform:translateX(0);
+    opacity:1;
+}
 
-        .toast-icon{
-            width:24px;
-            height:24px;
-            flex-shrink:0;
-            border-radius:50%;
-            background:#E53935;
-            color:#fff;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:14px;
-            font-weight:700;
-        }
+.toast-icon{
+    width:24px;
+    height:24px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:#E53935;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+}
 
-        .toast-text p{
-            margin:0;
-            font-size:13.5px;
-            line-height:1.5;
-        }
+.toast-text p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.5;
+}
 
-        .toast-title{
-            font-weight:600;
-            color:#1a1a2e;
-        }
+.toast-title{
+    font-weight:600;
+    color:#1a1a2e;
+}
 
-        .toast-desc{
-            color:#777;
-        }
+.toast-desc{
+    color:#777;
+}
 
-        @media(max-width:480px){
-        .toast{
-            top:15px;
-            right:15px;
-            left:15px;
-            max-width:none;
-        }
-        }
+@media(max-width:480px){
+.toast{
+    top:15px;
+    right:15px;
+    left:15px;
+    max-width:none;
+}
+}
 
-    </style>
+</style>
 
 </head>
 <body>
@@ -232,27 +232,27 @@
         <div class="input-group">
             <label for="username">Username</label>
             <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Enter username">
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter username">
         </div>
 
         <div class="input-group">
             <label for="password">Password</label>
             <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter password">
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password">
         </div>
 
         <div class="options">
 
             <label>
                 <input
-                        type="checkbox"
-                        id="rememberMe">
+                    type="checkbox"
+                    id="rememberMe">
                 Remember Me
             </label>
 
@@ -283,42 +283,42 @@
 
 <script>
 
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("loginForm").addEventListener("submit", function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-        // Valid credentials
-        if (username === "admin" && password === "testing") {
+    // Valid credentials
+    if (username === "admin" && password === "testing") {
 
-            // Redirect to Dashboard
-            window.location.href = "dashboard.html";
+        // Redirect to Dashboard
+        window.location.href = "dashboard.html";
 
-        } else {
+    } else {
 
-            // Clear the fields immediately
-            document.getElementById("username").value = "";
-            document.getElementById("password").value = "";
+        // Clear the fields immediately
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
 
-            showToast();
+        showToast();
 
-            document.getElementById("username").focus();
-        }
-
-    });
-
-    const toast = document.getElementById("toast");
-    let toastTimer;
-
-    function showToast(){
-        clearTimeout(toastTimer);
-        toast.classList.add("show");
-        toastTimer = setTimeout(function(){
-            toast.classList.remove("show");
-        }, 3000);
+        document.getElementById("username").focus();
     }
+
+});
+
+const toast = document.getElementById("toast");
+let toastTimer;
+
+function showToast(){
+    clearTimeout(toastTimer);
+    toast.classList.add("show");
+    toastTimer = setTimeout(function(){
+        toast.classList.remove("show");
+    }, 3000);
+}
 
 </script>
 
