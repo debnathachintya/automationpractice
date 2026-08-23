@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SDET Practice Dashboard - Cart</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    background:#eef3f8;
+}
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* LEFT PANE - no navigation links on purpose, this page is only reachable from ecommerce.html */
+
+.sidebar{
+
+    width:270px;
+    background:linear-gradient(180deg,#16213e,#0f3460,#1a1a2e);
+    color:white;
+    overflow:auto;
+}
+
+.profile{
+
+    text-align:center;
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+
+}
+
+.profile img{
+
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:4px solid white;
+}
+
+.profile h2{
+    margin-top:15px;
+}
+
+.profile p{
+
+    color:#d7d7d7;
+    font-size:14px;
+}
+
+.sidebar-note{
+
+    padding:20px 25px;
+    color:#a9b4c9;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.menu{
+
+    padding:20px;
+}
+
+.menu h3{
+
+    color:#FFD54F;
+    margin-bottom:12px;
+}
+
+.menu a{
+
+    display:block;
+    padding:14px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:white;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+
+    background:#00BCD4;
+    transform:translateX(8px);
+}
+
+/* RIGHT PANEL */
+
+.main{
+
+    flex:1;
+    overflow:auto;
+}
+
+.header{
+
+    background:white;
+    padding:20px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.header-right{
+
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+/* PROFILE DROPDOWN */
+
+.profile-menu{
+
+    position:relative;
+}
+
+.profile-trigger{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-radius:30px;
+    background:#f2f5f9;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.profile-trigger:hover{
+
+    background:#e3ecf5;
+}
+
+.profile-trigger img{
+
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #1976D2;
+}
+
+.profile-trigger span{
+
+    font-weight:600;
+    color:#16213e;
+    font-size:15px;
+}
+
+.profile-trigger .arrow{
+
+    font-size:12px;
+    color:#666;
+    transition:.3s;
+}
+
+.profile-menu:hover .arrow{
+
+    transform:rotate(180deg);
+}
+
+.dropdown-menu{
+
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    min-width:190px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    overflow:hidden;
+    z-index:100;
+}
+
+.profile-menu::after{
+
+    content:"";
+    position:absolute;
+    top:100%;
+    right:0;
+    height:10px;
+    width:100%;
+}
+
+.profile-menu:hover .dropdown-menu{
+
+    display:block;
+}
+
+.dropdown-menu a{
+
+    display:block;
+    padding:14px 18px;
+    text-decoration:none;
+    color:#333;
+    font-size:14px;
+    transition:.2s;
+}
+
+.dropdown-menu a:hover{
+
+    background:#f2f5f9;
+}
+
+.dropdown-menu a#logoutButton{
+
+    color:#E53935;
+    font-weight:600;
+    border-top:1px solid #eee;
+}
+
+.page-heading{
+
+    padding:30px 30px 0;
+}
+
+.page-heading h1{
+
+    color:#16213e;
+    font-size:28px;
+}
+
+.page-heading p{
+
+    color:#667;
+    margin-top:6px;
+}
+
+/* CART LAYOUT */
+
+.cart-layout{
+
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+    padding:25px 30px 40px;
+    align-items:start;
+}
+
+.cart-items-panel{
+
+    background:white;
+    border-radius:15px;
+    box-shadow:0 6px 15px rgba(0,0,0,.1);
+    overflow:hidden;
+}
+
+.cart-item{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:20px 25px;
+    border-bottom:1px solid #eef1f5;
+}
+
+.cart-item:last-child{
+
+    border-bottom:none;
+}
+
+.cart-item img{
+
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.cart-item-details{
+
+    flex:1;
+}
+
+.cart-item-details h3{
+
+    color:#16213e;
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.cart-item-unit-price{
+
+    color:#888;
+    font-size:13px;
+}
+
+.cart-item-qty{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.qty-btn{
+
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    border:1px solid #ccd5e0;
+    background:#f8fafc;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    color:#16213e;
+    transition:.2s;
+}
+
+.qty-btn:hover{
+
+    background:#e3ecf5;
+}
+
+.cart-item-qty span{
+
+    min-width:20px;
+    text-align:center;
+    font-weight:600;
+    color:#16213e;
+}
+
+.cart-item-subtotal{
+
+    min-width:80px;
+    text-align:right;
+    font-weight:700;
+    color:#1565C0;
+    font-size:16px;
+}
+
+.remove-item-btn{
+
+    background:none;
+    border:none;
+    color:#E53935;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    margin-left:15px;
+}
+
+.remove-item-btn:hover{
+
+    text-decoration:underline;
+}
+
+/* EMPTY STATE */
+
+.cart-empty{
+
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:70px 30px;
+    text-align:center;
+}
+
+.cart-empty .empty-icon{
+
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.cart-empty h3{
+
+    color:#16213e;
+    font-size:20px;
+    margin-bottom:8px;
+}
+
+.cart-empty p{
+
+    color:#777;
+    font-size:14px;
+    margin-bottom:22px;
+}
+
+/* ORDER SUMMARY */
+
+.summary-panel{
+
+    background:white;
+    border-radius:15px;
+    box-shadow:0 6px 15px rgba(0,0,0,.1);
+    padding:25px;
+}
+
+.summary-panel h2{
+
+    color:#16213e;
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+.summary-row{
+
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    color:#555;
+    font-size:14px;
+}
+
+.summary-row.total{
+
+    border-top:1px solid #eef1f5;
+    margin-top:10px;
+    padding-top:16px;
+    font-size:18px;
+    font-weight:700;
+    color:#16213e;
+}
+
+.summary-actions{
+
+    margin-top:22px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.btn{
+
+    padding:13px 20px;
+    border-radius:10px;
+    border:none;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-checkout{
+
+    background:#00BCD4;
+    color:white;
+}
+
+.btn-checkout:hover{
+
+    background:#0097A7;
+}
+
+.btn-checkout:disabled{
+
+    background:#b0bec5;
+    cursor:not-allowed;
+}
+
+.btn-continue{
+
+    background:transparent;
+    border:1px solid #ccd5e0;
+    color:#16213e;
+}
+
+.btn-continue:hover{
+
+    background:#f2f5f9;
+}
+
+/* TOAST */
+
+.toast{
+
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    background:#16213e;
+    color:white;
+    padding:16px 22px;
+    border-radius:10px;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:.3s;
+    z-index:999;
+}
+
+.toast.show{
+
+    opacity:1;
+    transform:translateY(0);
+}
+
+.toast .checkmark{
+
+    color:#4CAF50;
+    font-weight:700;
+}
+
+/* LOGOUT MODAL */
+
+.modal-overlay{
+
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(15,20,40,.55);
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+}
+
+.modal-overlay.show{
+
+    display:flex;
+}
+
+.modal-box{
+
+    width:340px;
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.modal-header{
+
+    background:linear-gradient(180deg,#16213e,#0f3460);
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.modal-header-icon{
+
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:18px;
+}
+
+.modal-header h3{
+
+    color:white;
+    font-weight:500;
+    font-size:16px;
+}
+
+.modal-body{
+
+    padding:24px;
+}
+
+.modal-body p{
+
+    font-size:14px;
+    color:#666;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+.modal-actions{
+
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+}
+
+.modal-btn{
+
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    border:none;
+    transition:.2s;
+}
+
+.modal-btn-cancel{
+
+    background:transparent;
+    border:1px solid #ccd5e0;
+    color:#333;
+}
+
+.modal-btn-cancel:hover{
+
+    background:#f2f5f9;
+}
+
+.modal-btn-confirm{
+
+    background:#E53935;
+    color:white;
+}
+
+.modal-btn-confirm:hover{
+
+    background:#c62828;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT FRAME -->
+
+    <div class="sidebar">
+
+        <div class="profile">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+            <h2 id="loggedInUser">Administrator</h2>
+
+            <p>Automation Tester</p>
+
+        </div>
+
+        <div class="menu">
+
+            <h3>Navigation</h3>
+
+            <a href="dashboard.html" id="navDashboard">Dashboard</a>
+
+            <a href="createuser.html" id="navUsers">Create User</a>
+
+            <a href="locatorspractice.html" id="locatorspractice">Locators Practice</a>
+
+            <a href="datatable.html" id="navDataTable">Data Table</a>
+
+            <a href="sendmoney.html" id="navSendMoney">Send Money</a>
+
+            <a href="ecommerce.html" id="navEcommerce" class="active">E-commerce</a>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT FRAME -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <h2 id="cartTitle">
+                E-commerce Practice Store
+            </h2>
+
+            <div class="header-right">
+
+                <div class="profile-menu">
+
+                    <div class="profile-trigger">
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                        <span id="loggedInUserHeader">Administrator</span>
+
+                        <span class="arrow">&#9662;</span>
+
+                    </div>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#" id="navAbout">About</a>
+
+                        <a href="#" id="navSupport">Support</a>
+
+                        <a href="#" id="navChangePassword">Change Password</a>
+
+                        <a href="#" id="logoutButton">Logout</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="page-heading">
+
+            <h1>Shopping Cart</h1>
+
+            <p>Review the items you've added before checking out.</p>
+
+        </div>
+
+        <div class="cart-layout">
+
+            <div class="cart-items-panel">
+
+                <div id="cartItemsList"></div>
+
+                <div class="cart-empty" id="cartEmptyState">
+
+                    <div class="empty-icon">&#128722;</div>
+
+                    <h3 id="cartEmptyMessage">No products in your cart</h3>
+
+                    <p>Looks like you haven't added anything yet.</p>
+
+                    <button class="btn btn-checkout" id="emptyContinueShoppingBtn" style="width:auto;">Continue Shopping</button>
+
+                </div>
+
+            </div>
+
+            <div class="summary-panel" id="summaryPanel">
+
+                <h2>Order Summary</h2>
+
+                <div class="summary-row">
+                    <span>Items (<span id="summaryItemCount">0</span>)</span>
+                    <span id="summarySubtotal">$0.00</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span id="summaryShipping">$0.00</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="summaryTotal">$0.00</span>
+                </div>
+
+                <div class="summary-actions">
+
+                    <button class="btn btn-checkout" id="checkoutBtn">Checkout</button>
+
+                    <button class="btn btn-continue" id="continueShoppingBtn">Continue Shopping</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="toast" id="toast">
+
+    <span class="checkmark">&#10003;</span>
+
+    <span id="toastMessage">Order placed successfully</span>
+
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+
+<div class="modal-overlay" id="logoutModalOverlay">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div class="modal-header-icon">&#9211;</div>
+
+            <h3>Log out</h3>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p>You'll need to sign in again to access the dashboard. Any unsaved changes will be lost.</p>
+
+            <div class="modal-actions">
+
+                <button class="modal-btn modal-btn-cancel" id="logoutCancelBtn">Cancel</button>
+
+                <button class="modal-btn modal-btn-confirm" id="logoutConfirmBtn">Log out</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const CART_STORAGE_KEY = "sdetPracticeCart";
+
+function getCart(){
+
+    const raw = sessionStorage.getItem(CART_STORAGE_KEY);
+
+    return raw ? JSON.parse(raw) : [];
+
+}
+
+function saveCart(cart){
+
+    sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+
+}
+
+function formatCurrency(amount){
+
+    return "$" + amount.toFixed(2);
+
+}
+
+function renderCart(){
+
+    const cart = getCart();
+
+    const listContainer = document.getElementById("cartItemsList");
+
+    const emptyState = document.getElementById("cartEmptyState");
+
+    const summaryPanel = document.getElementById("summaryPanel");
+
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    listContainer.innerHTML = "";
+
+    if(cart.length === 0){
+
+        listContainer.style.display = "none";
+
+        emptyState.style.display = "flex";
+
+        summaryPanel.style.display = "none";
+
+        return;
+
+    }
+
+    listContainer.style.display = "block";
+
+    emptyState.style.display = "none";
+
+    summaryPanel.style.display = "block";
+
+    let subtotal = 0;
+
+    let itemCount = 0;
+
+    cart.forEach(function(item){
+
+        const lineTotal = item.price * item.qty;
+
+        subtotal += lineTotal;
+
+        itemCount += item.qty;
+
+        const row = document.createElement("div");
+
+        row.className = "cart-item";
+
+        row.id = "cartItem-" + item.id;
+
+        row.innerHTML =
+            '<img src="' + item.image + '" alt="' + item.name + '">' +
+            '<div class="cart-item-details">' +
+                '<h3>' + item.name + '</h3>' +
+                '<span class="cart-item-unit-price">' + formatCurrency(item.price) + ' each</span>' +
+            '</div>' +
+            '<div class="cart-item-qty">' +
+                '<button class="qty-btn" id="decreaseQty-' + item.id + '">-</button>' +
+                '<span id="qtyValue-' + item.id + '">' + item.qty + '</span>' +
+                '<button class="qty-btn" id="increaseQty-' + item.id + '">+</button>' +
+            '</div>' +
+            '<div class="cart-item-subtotal" id="cartItemSubtotal-' + item.id + '">' + formatCurrency(lineTotal) + '</div>' +
+            '<button class="remove-item-btn" id="removeItem-' + item.id + '">Remove</button>';
+
+        listContainer.appendChild(row);
+
+    });
+
+    document.getElementById("summaryItemCount").innerText = itemCount;
+
+    document.getElementById("summarySubtotal").innerText = formatCurrency(subtotal);
+
+    document.getElementById("summaryShipping").innerText = subtotal > 0 ? formatCurrency(4.99) : formatCurrency(0);
+
+    const shipping = subtotal > 0 ? 4.99 : 0;
+
+    document.getElementById("summaryTotal").innerText = formatCurrency(subtotal + shipping);
+
+    checkoutBtn.disabled = false;
+
+    attachQtyHandlers();
+
+}
+
+function attachQtyHandlers(){
+
+    const cart = getCart();
+
+    cart.forEach(function(item){
+
+        const increaseBtn = document.getElementById("increaseQty-" + item.id);
+
+        const decreaseBtn = document.getElementById("decreaseQty-" + item.id);
+
+        const removeBtn = document.getElementById("removeItem-" + item.id);
+
+        increaseBtn.addEventListener("click", function(){
+
+            updateQty(item.id, 1);
+
+        });
+
+        decreaseBtn.addEventListener("click", function(){
+
+            updateQty(item.id, -1);
+
+        });
+
+        removeBtn.addEventListener("click", function(){
+
+            removeItem(item.id);
+
+        });
+
+    });
+
+}
+
+function updateQty(productId, delta){
+
+    let cart = getCart();
+
+    const item = cart.find(function(i){ return i.id === productId; });
+
+    if(!item) return;
+
+    item.qty += delta;
+
+    if(item.qty <= 0){
+
+        cart = cart.filter(function(i){ return i.id !== productId; });
+
+    }
+
+    saveCart(cart);
+
+    renderCart();
+
+}
+
+function removeItem(productId){
+
+    let cart = getCart();
+
+    cart = cart.filter(function(i){ return i.id !== productId; });
+
+    saveCart(cart);
+
+    renderCart();
+
+    showToast("Item removed from cart");
+
+}
+
+function showToast(message){
+
+    const toast = document.getElementById("toast");
+
+    document.getElementById("toastMessage").innerText = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window._toastTimer);
+
+    window._toastTimer = setTimeout(function(){
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+document.getElementById("checkoutBtn").addEventListener("click", function(){
+
+    const cart = getCart();
+
+    if(cart.length === 0) return;
+
+    showToast("Order placed successfully!");
+
+    saveCart([]);
+
+    setTimeout(function(){
+
+        window.location.href = "ecommerce.html";
+
+    }, 1800);
+
+});
+
+document.getElementById("continueShoppingBtn").addEventListener("click", function(){
+
+    window.location.href = "ecommerce.html";
+
+});
+
+document.getElementById("emptyContinueShoppingBtn").addEventListener("click", function(){
+
+    window.location.href = "ecommerce.html";
+
+});
+
+const logoutButton = document.getElementById("logoutButton");
+const logoutModalOverlay = document.getElementById("logoutModalOverlay");
+const logoutCancelBtn = document.getElementById("logoutCancelBtn");
+const logoutConfirmBtn = document.getElementById("logoutConfirmBtn");
+
+logoutButton.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    logoutModalOverlay.classList.add("show");
+
+});
+
+logoutCancelBtn.addEventListener("click", function(){
+
+    logoutModalOverlay.classList.remove("show");
+
+});
+
+logoutConfirmBtn.addEventListener("click", function(){
+
+    window.location.href = "index.html";
+
+});
+
+logoutModalOverlay.addEventListener("click", function(e){
+
+    if(e.target === logoutModalOverlay){
+
+        logoutModalOverlay.classList.remove("show");
+
+    }
+
+});
+
+renderCart();
+
+</script>
+
+</body>
+
+</html>
