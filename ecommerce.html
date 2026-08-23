@@ -411,6 +411,120 @@ body{
     font-weight:700;
 }
 
+
+/* LOGOUT MODAL */
+
+.modal-overlay{
+
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(15,20,40,.55);
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+}
+
+.modal-overlay.show{
+
+    display:flex;
+}
+
+.modal-box{
+
+    width:340px;
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.modal-header{
+
+    background:linear-gradient(180deg,#16213e,#0f3460);
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.modal-header-icon{
+
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:18px;
+}
+
+.modal-header h3{
+
+    color:white;
+    font-weight:500;
+    font-size:16px;
+}
+
+.modal-body{
+
+    padding:24px;
+}
+
+.modal-body p{
+
+    font-size:14px;
+    color:#666;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+.modal-actions{
+
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+}
+
+.modal-btn{
+
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    border:none;
+    transition:.2s;
+}
+
+.modal-btn-cancel{
+
+    background:transparent;
+    border:1px solid #ccd5e0;
+    color:#333;
+}
+
+.modal-btn-cancel:hover{
+
+    background:#f2f5f9;
+}
+
+.modal-btn-confirm{
+
+    background:#E53935;
+    color:white;
+}
+
+.modal-btn-confirm:hover{
+
+    background:#c62828;
+}
+
 </style>
 
 </head>
@@ -783,15 +897,75 @@ document.getElementById("logoutButton").addEventListener("click", function(e){
 
     e.preventDefault();
 
-    if(confirm("Are you sure you want to logout?")){
+    logoutModalOverlay.classList.add("show");
 
-        window.location.href="index.html";
+});
+
+</script>
+
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+
+<div class="modal-overlay" id="logoutModalOverlay">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div class="modal-header-icon">&#9211;</div>
+
+            <h3>Log out</h3>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p>You'll need to sign in again to access the dashboard. Any unsaved changes will be lost.</p>
+
+            <div class="modal-actions">
+
+                <button class="modal-btn modal-btn-cancel" id="logoutCancelBtn">Cancel</button>
+
+                <button class="modal-btn modal-btn-confirm" id="logoutConfirmBtn">Log out</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const logoutModalOverlay = document.getElementById("logoutModalOverlay");
+const logoutCancelBtn = document.getElementById("logoutCancelBtn");
+const logoutConfirmBtn = document.getElementById("logoutConfirmBtn");
+
+logoutCancelBtn.addEventListener("click", function(){
+
+    logoutModalOverlay.classList.remove("show");
+
+});
+
+logoutConfirmBtn.addEventListener("click", function(){
+
+    window.location.href="index.html";
+
+});
+
+logoutModalOverlay.addEventListener("click", function(e){
+
+    if(e.target === logoutModalOverlay){
+
+        logoutModalOverlay.classList.remove("show");
 
     }
 
 });
 
 </script>
+
 
 </body>
 
