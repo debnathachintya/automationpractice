@@ -53,6 +53,15 @@ body{background:#eef3f8;}
 .color-wrap{display:flex;align-items:center;gap:15px;}
 .color-wrap input[type="color"]{width:60px;height:42px;border:1px solid #ccd5e0;border-radius:8px;cursor:pointer;}
 #colorValue{font-weight:600;color:#1565C0;}
+
+/* CUSTOM DROPDOWN (no select tag) */
+.custom-dropdown{position:relative;width:100%;}
+.custom-dropdown-trigger{padding:10px 12px;background:white;border:1px solid #ccd5e0;border-radius:4px;font-size:14px;color:#222;cursor:pointer;user-select:none;}
+.custom-dropdown-list{display:none;position:absolute;top:calc(100% + 0px);left:12px;right:-12px;margin:0;padding:0;list-style:none;background:white;border:1px solid #ccd5e0;box-shadow:0 4px 12px rgba(0,0,0,.08);z-index:50;}
+.custom-dropdown.open .custom-dropdown-list{display:block;}
+.custom-dropdown-list li{padding:14px 12px;font-size:14px;color:#222;cursor:pointer;}
+.custom-dropdown-list li:hover{background:#f2f5f9;}
+.custom-dropdown-list li.selected{background:#e3ecf5;font-weight:600;}
 #formResult{margin-top:25px;background:#0f3460;color:#dcedc8;padding:20px;border-radius:10px;font-family:monospace;font-size:13px;white-space:pre-wrap;display:none;}
 
 /* LOGOUT MODAL */
@@ -278,6 +287,20 @@ body{background:#eef3f8;}
                     </div>
 
                     <div class="form-group">
+                        <label id="customDropdownLabel">Custom Dropdown</label>
+                        <div class="custom-dropdown" id="customDropdown">
+                            <div class="custom-dropdown-trigger" id="customDropdownTrigger" role="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="customDropdownLabel">Select Country</div>
+                            <ul class="custom-dropdown-list" id="customDropdownList" role="listbox">
+                                <li id="countryIndia" role="option" data-value="India">India</li>
+                                <li id="countryUSA" role="option" data-value="United States">United States</li>
+                                <li id="countryGermany" role="option" data-value="Germany">Germany</li>
+                                <li id="countryJapan" role="option" data-value="Japan">Japan</li>
+                            </ul>
+                            <input type="hidden" id="customDropdownValue" name="customCountry" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="datePicker">Date Picker</label>
                         <input type="date" id="datePicker" name="datePicker">
                     </div>
@@ -329,6 +352,35 @@ const sliderInput = document.getElementById("sliderInput");
 const sliderValue = document.getElementById("sliderValue");
 sliderInput.addEventListener("input", function(){
     sliderValue.textContent = sliderInput.value;
+});
+
+
+const customDropdown = document.getElementById("customDropdown");
+const customDropdownTrigger = document.getElementById("customDropdownTrigger");
+const customDropdownList = document.getElementById("customDropdownList");
+const customDropdownValue = document.getElementById("customDropdownValue");
+
+customDropdownTrigger.addEventListener("click", function(e){
+    e.stopPropagation();
+    const isOpen = customDropdown.classList.toggle("open");
+    customDropdownTrigger.setAttribute("aria-expanded", isOpen);
+});
+
+customDropdownList.querySelectorAll("li").forEach(function(item){
+    item.addEventListener("click", function(e){
+        e.stopPropagation();
+        customDropdownList.querySelectorAll("li").forEach(function(li){ li.classList.remove("selected"); });
+        item.classList.add("selected");
+        customDropdownTrigger.textContent = item.textContent;
+        customDropdownValue.value = item.dataset.value;
+        customDropdown.classList.remove("open");
+        customDropdownTrigger.setAttribute("aria-expanded", "false");
+    });
+});
+
+document.addEventListener("click", function(){
+    customDropdown.classList.remove("open");
+    customDropdownTrigger.setAttribute("aria-expanded", "false");
 });
 
 const colorPicker = document.getElementById("colorPicker");
